@@ -4,7 +4,7 @@ spring:
   cloud:
     config:
       enabled: true
-      uri: http://config-service:7080
+      uri: http://localhost:7080
 
 
 
