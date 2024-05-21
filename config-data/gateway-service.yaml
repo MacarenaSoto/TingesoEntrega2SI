@@ -21,6 +21,18 @@ spring:
           uri: lb://car-service
           predicates:
             - Path=/api/v2/cars/**
+        - id: car-service
+          uri: lb://car-service
+          predicates:
+            - Path=/api/v2/brands/**
+        - id: car-service
+          uri: lb://car-service
+          predicates:
+            - Path=/api/v2/types/**
+        - id: car-service
+          uri: lb://car-service
+          predicates:
+            - Path=/api/v2/engines/**
         - id: repairs-service
           uri: lb://repairs-service
           predicates:
