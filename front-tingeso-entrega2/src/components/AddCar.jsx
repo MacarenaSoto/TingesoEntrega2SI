@@ -20,7 +20,7 @@ const AddCar = () => {
     const fetchBrandOptions = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8081/api/v2/brands/all"
+          "http://localhost:6081/api/v2/brands/all"
         );
         setBrandOptions(response.data.map(brand => ({ id: brand.id, name: brand.name })));
 
@@ -34,7 +34,7 @@ const AddCar = () => {
     const fetchTypeOptions = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8081/api/v2/types/all"
+          "http://localhost:6081/api/v2/types/all"
         );
         setTypeOptions(response.data.map(type => ({ id: type.id, name: type.name })));
       } catch (error) {
@@ -47,7 +47,7 @@ const AddCar = () => {
     const fetchEngineOptions = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8081/api/v2/engines/all"
+          "http://localhost:6081/api/v2/engines/all"
         );
         setEngineOptions(response.data.map(engine => ({ id: engine.id, name: engine.name })));
       } catch (error) {

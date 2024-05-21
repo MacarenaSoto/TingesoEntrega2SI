@@ -33,7 +33,7 @@ spring:
           uri: lb://car-service
           predicates:
             - Path=/api/v2/engines/**
-        - id: repairs-service
-          uri: lb://repairs-service
+        - id: repair-service
+          uri: lb://repair-service
           predicates:
             - Path=/api/v2/repairs/**

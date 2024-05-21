@@ -11,7 +11,7 @@ const AddBrand = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8081/api/v2/brands/add",
+        "http://localhost:6081/api/v2/brands/add",
         {
             name: name,
         }
