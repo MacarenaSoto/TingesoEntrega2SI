@@ -21,6 +21,8 @@ const AddRepair = () => {
   const [exitDate, setExitDate] = useState(null);
   const [exitHour, setExitHour] = useState("");
   const [engineId, setEngineId] = useState(null);
+  const [numReparaciones, setNumReparaciones] = useState(1);
+  const [reparaciones, setReparaciones] = useState([]);
 
   // Función para obtener el engineId basado en la patente
   const fetchEngineId = async (patent) => {
@@ -28,7 +30,7 @@ const AddRepair = () => {
       console.log("Fetching engineId for patent:", patent);
       // Realizar una solicitud para obtener el objeto completo del automóvil basado en la patente
       const carResponse = await axios.get(
-        `http://localhost:8081/api/v2/cars/patent/${patent}`
+        `http://localhost:6081/api/v2/cars/patent/${patent}`
       );
       console.log("Car response data:", carResponse.data);
       // Obtener el engineId del objeto del automóvil
@@ -65,11 +67,28 @@ const AddRepair = () => {
     }
   };
 
+  function AddReparaciones() {
+    const [numReparaciones, setNumReparaciones] = useState(1);
+    const [selectedRepair, setSelectedRepair] = useState('');
+    const [reparaciones, setReparaciones] = useState([]);
+  
+    const handleNumReparacionesChange = (e) => {
+      setNumReparaciones(parseInt(e.target.value, 10));
+      setReparaciones([]);
+    };
+  
+    const handleReparacionChange = (index, value) => {
+      const newReparaciones = [...reparaciones];
+      newReparaciones[index] = value;
+      setReparaciones(newReparaciones);
+    };
+  }
+
   useEffect(() => {
     const fetchRepairOptions = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/api/v2/repairs/all"
+          "http://localhost:6081/api/v2/repairs/all"
         );
         setRepairOptions(response.data);
       } catch (error) {
@@ -99,6 +118,7 @@ const AddRepair = () => {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
 
     try {
       // Formatear la fecha de ingreso
@@ -143,10 +163,48 @@ const AddRepair = () => {
       <h1>Agregar una nueva Reparación</h1>
       <form onSubmit={handleSubmit} className="add-car-form">
         <div className="form">
-          <label>
+        <label>
             Patente del vehículo:
             <input type="text" value={patent} onChange={handlePatentChange} />
           </label>
+        <label>
+            Cantidad de Reparaciones:
+            <input
+              type="number"
+              value={numReparaciones}
+              onChange={(e) => setNumReparaciones(parseInt(e.target.value, 10))}
+            />
+          </label>
+          {numReparaciones > 0 && (
+            <>
+
+          {[...Array(numReparaciones)].map((_, index) => (
+            <label key={index}>
+              Tipo de reparación {index + 1}:
+              <select
+                value={reparaciones[index] || ""}
+                onChange={(e) => {
+                  const newReparaciones = [...reparaciones];
+                  newReparaciones[index] = e.target.value;
+                  setReparaciones(newReparaciones);
+                }}
+              >
+                <option value="">Seleccione el tipo de reparación</option>
+                {filteredRepairOptions.map((repair) => (
+                  <option key={repair.id} value={repair.id}>
+                    {repair.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ))}
+          </>
+          )}
+          
+
+
+          
+          
           <label>
             Fecha de ingreso:
             <DatePicker // Usa el componente DatePicker
@@ -165,20 +223,6 @@ const AddRepair = () => {
                 marginRight: "8px",
               }}
             />
-          </label>
-          <label>
-            Tipo de reparación
-            <select
-              value={selectedRepair}
-              onChange={(e) => setRepairType(e.target.value)}
-            >
-              <option value="">Seleccione el tipo de reparación</option>
-              {filteredRepairOptions.map((repair) => (
-                <option key={repair.id} value={repair.id}>
-                  {repair.name}
-                </option>
-              ))}
-            </select>
           </label>
           <label>
             Fecha de Salida:
