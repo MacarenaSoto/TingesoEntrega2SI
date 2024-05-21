@@ -1,0 +1,87 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .row {
+    margin: 10px;
+  }
+  
+/*   .button {
+    background-color: #040809;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+  } */
+  
+
+  .add-car-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.add-car-title {
+    font-size: 24px;
+    margin-bottom: 50px;
+}
+
+.add-car-card {
+    width: 600px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.add-car-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-car-form label {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    width: 100%; /* Ancho fijo para las etiquetas */
+}
+
+.add-car-form label input,
+.add-car-form label select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1; /* El campo de entrada o selector ocupa todo el espacio restante */
+}
+
+.add-car-form button {
+    margin-top: 20px;
+    background-color: #4a0a61;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+.add-car-form button:hover {
+    background-color: #560d96;
+}

@@ -1,0 +1,14 @@
+.tabla-container {
+    text-align: center; /* Centra el contenido de la tabla */
+  }
+  
+  .tabla-autos {
+    border-collapse: collapse; /* Combina los bordes de las celdas */
+    width: 100%; /* Opcional: Haz que la tabla ocupe el 100% del ancho disponible */
+  }
+  
+  .tabla-autos th, .tabla-autos td {
+    padding: 10px; /* Aumenta el espacio entre el contenido y los bordes de las celdas */
+    border: 1px solid #dddddd; /* Agrega bordes a las celdas */
+  }
+  

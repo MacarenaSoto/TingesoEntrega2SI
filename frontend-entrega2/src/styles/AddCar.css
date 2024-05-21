@@ -1,0 +1,54 @@
+.add-car-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+}
+
+.add-car-title {
+    font-size: 24px;
+    margin-bottom: 50px;
+}
+
+.add-car-card {
+    width: 600px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(219, 19, 19, 0.1);
+}
+
+.add-car-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-car-form label {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    width: 100%; /* Ancho fijo para las etiquetas */
+}
+
+.add-car-form label input,
+.add-car-form label select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex: 1; /* El campo de entrada o selector ocupa todo el espacio restante */
+}
+
+.add-car-form button {
+    margin-top: 20px;
+    background-color: #5e095d !important;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+.add-car-form button:hover {
+    background-color: #c999c7 !important;
+}
