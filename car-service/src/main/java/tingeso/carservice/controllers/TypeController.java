@@ -13,7 +13,7 @@ import tingeso.carservice.services.TypeService;
 
 @RestController
 @RequestMapping("/api/v2/types")
-@CrossOrigin(origins = "*")
+@CrossOrigin("*")
 public class TypeController {
 
     @Autowired
