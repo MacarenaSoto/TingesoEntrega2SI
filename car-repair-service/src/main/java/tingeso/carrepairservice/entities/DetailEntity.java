@@ -33,7 +33,19 @@ public class DetailEntity {
 
     //Lista con los amount de las reparaciones
     private List<Double> repairAmounts;
-    
+
+    //Lista con los nombres de los descuentos
+    private List<String> discountNames;
+
+    //Lista con los amount de los descuentos
+    private List<Double> discountAmounts;
+
+    //Lista con los nombres de los recargos
+    private List<String> surchargeNames;
+
+    //Lista con los amount de los recargos
+    private List<Double> surchargeAmounts;
+
     private int totalAmount;
     private Date admissionDate;
     private LocalTime admissionHour;

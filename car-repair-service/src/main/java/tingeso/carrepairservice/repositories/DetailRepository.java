@@ -13,5 +13,6 @@ public interface DetailRepository extends JpaRepository<DetailEntity, Long>{
     List<DetailEntity> findByCarId(Long carId);
     List<DetailEntity> findAll();
     DetailEntity findByAdmissionDate(Date admissionDate);
+    
 
 }
