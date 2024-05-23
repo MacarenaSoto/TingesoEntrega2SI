@@ -26,12 +26,40 @@ const NewDetail = () => {
   const [km, setKm] = useState("");
   const [bonusOptions, setBonusOptions] = useState([]);
   const [selectedBonus, setSelectedBonus] = useState("");
+  const [id, setCarId] = useState(null);
+
+
+  const fetchCarId = async (patent) => {
+    try {
+      console.log("Fetching carId for patent:", patent);
+      // Realizar una solicitud para obtener el objeto completo del automóvil basado en la patente
+      const carResponse = await axios.get(
+        `http://localhost:6081/api/v2/cars/patent/${patent}`
+      );
+      console.log("Car response data:", carResponse.data);
+
+      const carId = carResponse.data.id;
+      console.log("Este es el CarId:", carId);
+
+      // Actualizar el estado con el carId obtenido
+      setCarId(carId);
+      console.log("CarId set successfully:", carId);
+    } catch (error) {
+      console.error("Error fetching carId:", error);
+    }
+  };
+
+  const handlePatentChange = (e) => {
+    const { value } = e.target;
+    setPatent(value);
+    fetchCarId(value);
+  };
 
   useEffect(() => {
     const fetchBonusOptions = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8090/api/v1/bonuss/all"
+          "http://localhost:6081/api/v2/bonuss/all"
         );
         setBonusOptions(response.data);
       } catch (error) {
@@ -77,12 +105,63 @@ const NewDetail = () => {
 
       // Log del valor que se está enviando al backend
       console.log("Valor enviado al backend:", {
-        patent: patent,
+        carId: id,
         realExitDate: formattedRealExitDate,
         realExitHour: formattedRealExitHour,
         km: km,
         selectedBonus: selectedBonus,
       });
+
+      
+/* 
+      //Lo que mando al back de details
+      const respondeData1 ={
+        carId: id,
+      };
+
+      //Lo que mando al back de repairs
+      const respondeData2 ={
+        realExitDate: formattedRealExitDate,
+        realExitHour: formattedRealExitHour,
+      };
+
+      const respondefirst = await axios.post(
+        "http://localhost:6081/api/v2/details/add",
+        respondeData1
+      );
+
+      console.log("Respuesta del primer backend:", respondefirst.data);
+
+      const responsesecond = await axios.post(
+        "http://localhost:6081/api/v2/carrepairs/add",
+        respondeData2
+      );
+
+      console.log("Respuesta del segundo backend:", responsesecond.data); */
+      console.log("2daaaaaaaaaaaaaaaaaa");
+
+       const response = await axios.post(
+        `http://localhost:6081/api/v2/details/add`,
+        {
+          carId: id,
+        }
+      ); 
+
+      console.log("Respuesta del backend:", response.data);
+
+      const response2 = await axios.post(
+        `http://localhost:6081/api/v2/carrepairs/update/${id}`,
+        {
+          realExitDate: formattedRealExitDate,
+          realExitHour: formattedRealExitHour,
+        }
+      );
+
+      console.log("Respuesta del backend:", response2.data);
+
+      // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
+      //history.push('/detail');
+
 
       let bonusToSend = selectedBonus; // Almacena el valor seleccionado del bono
 
@@ -94,22 +173,7 @@ const NewDetail = () => {
         // Aquí podrías mostrar un mensaje de error al usuario o realizar alguna otra acción
         return;
       }
-
-      const response = await axios.post(
-        "http://localhost:8090/api/v1/details/add",
-        {
-          patent: patent,
-          realExitDate: formattedRealExitDate,
-          realExitHour: formattedRealExitHour,
-          km: km,
-          selectedBonus: selectedBonus,
-        }
-      );
-
-      console.log("Respuesta del backend:", response.data);
-
-      // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
-      //history.push('/detail');
+      console.log("1eraaaaaaaaaaaaaaaaaa");
     } catch (error) {
       console.error("Error al enviar los datos:", error);
       // Aquí podrías mostrar un mensaje de error al usuario
@@ -128,7 +192,7 @@ const NewDetail = () => {
                 <input
                   type="text"
                   value={patent}
-                  onChange={(e) => setPatent(e.target.value)}
+                  onChange={handlePatentChange}
                 />
               </label>
               <label>

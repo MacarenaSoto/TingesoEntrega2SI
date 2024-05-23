@@ -76,6 +76,14 @@ public class RepairService {
         updateRepair(repair);
     }
 
+    //updateRepairByCarId
+    public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair){
+        RepairEntity repairToUpdate = getRepairsByCarIdAndRealExitDateIsNull(carId).get(0);
+        repairToUpdate.setRealExitDate(repair.getRealExitDate());
+        repairToUpdate.setRealExitHour(repair.getRealExitHour());
+        return updateRepair(repairToUpdate);
+    }
+
 
 
 

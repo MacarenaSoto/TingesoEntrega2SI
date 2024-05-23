@@ -49,6 +49,14 @@ public class DetailService {
         return details;
     }
 
+    //getDetails
+    public List<DetailEntity> getDetails(){
+        List<DetailEntity> details = detailRepository.findAll();
+        return details;
+    }
+
+
+
 
 
 

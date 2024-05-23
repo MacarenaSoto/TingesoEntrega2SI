@@ -67,5 +67,16 @@ public class RepairController {
         }
     }
 
+    //update a un repair específico según su carId
+    @PutMapping("/update/{carId}")
+    public ResponseEntity<RepairEntity> updateRepairByCarId(@PathVariable Long carId, @RequestBody RepairEntity repairEntity) {
+        try {
+            RepairEntity repair = repairService.updateRepairByCarId(carId, repairEntity);
+            return ResponseEntity.ok(repair);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 
 }
