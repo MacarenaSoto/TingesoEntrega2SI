@@ -179,12 +179,6 @@ const NewDetail = () => {
           </form>
         </div>
       </div>
-      <div style={styles.row}>
-        <Link to="/detail" style={styles.button}>
-          Siguiente
-        </Link>
-      </div>
-      <Detail patent={patent} />
     </div>
   );
 };
