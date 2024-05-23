@@ -10,6 +10,7 @@ import tingeso.carservice.services.EngineService;
 
 @RestController
 @RequestMapping("/api/v2/engines")
+//@CrossOrigin("*")
 public class EngineController {
 
     @Autowired

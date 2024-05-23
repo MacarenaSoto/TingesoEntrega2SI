@@ -12,6 +12,7 @@ import tingeso.repairservice.services.RepairService;
 
 @RestController
 @RequestMapping("/api/v2/repairs")
+//@CrossOrigin("*")
 
 public class RepairController {
 

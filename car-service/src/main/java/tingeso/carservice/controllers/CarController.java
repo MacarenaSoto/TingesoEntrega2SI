@@ -12,6 +12,7 @@ import tingeso.carservice.services.CarService;
 
 @RestController
 @RequestMapping("/api/v2/cars")
+//@CrossOrigin("*")
 
 public class CarController {
 

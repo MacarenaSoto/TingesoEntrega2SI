@@ -63,7 +63,7 @@ const AddCar = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8081/api/v2/cars/add",
+        "http://localhost:6081/api/v2/cars/add",
         {
           patent: patent,
           model: model,
