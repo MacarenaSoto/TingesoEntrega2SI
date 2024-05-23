@@ -4,9 +4,13 @@ import tingeso.carrepairservice.entities.AppliedDiscountsEntity;
 import tingeso.carrepairservice.entities.DetailEntity;
 import tingeso.carrepairservice.entities.RepairEntity;
 
+import tingeso.carrepairservice.model.Car;
+
 import tingeso.carrepairservice.repositories.AppliedDiscountsRepository;
 import tingeso.carrepairservice.repositories.DetailRepository;
 import tingeso.carrepairservice.repositories.RepairRepository;
+
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +75,11 @@ public class AppliedDiscountsService {
             }
         }
         return total;
+    }
+
+    //pedir auto del MS1
+    public List<Car> getCars(Long carId){
+        List<Car> cars = restTemplate.getForObject("http://car-service/api/v2/cars/{id}" + carId, List.class);
     }
 
 

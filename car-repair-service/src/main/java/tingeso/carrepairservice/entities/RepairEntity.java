@@ -18,7 +18,7 @@ public class RepairEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private int id;
+    private Long id;
     private Date admissionDate;
     private LocalTime admissionHour;
     private Date exitDate ;

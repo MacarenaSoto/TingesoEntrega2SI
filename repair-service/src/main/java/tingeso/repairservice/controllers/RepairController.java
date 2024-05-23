@@ -12,7 +12,7 @@ import tingeso.repairservice.services.RepairService;
 
 @RestController
 @RequestMapping("/api/v2/repairs")
-@CrossOrigin(origins = "*")
+
 public class RepairController {
 
     @Autowired

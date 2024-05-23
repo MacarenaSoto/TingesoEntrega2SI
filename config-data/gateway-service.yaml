@@ -20,8 +20,8 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins: '*'
-            allowedMethods: "*"
-            allowedHeaders: "*"
+            #allowedMethods: "*"
+            #allowedHeaders: "*"
       routes:
         - id: car-service
           uri: lb://car-service

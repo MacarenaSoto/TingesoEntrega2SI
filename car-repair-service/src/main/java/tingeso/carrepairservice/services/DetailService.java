@@ -43,6 +43,12 @@ public class DetailService {
         return details;
     }
 
+    //getDetailByCarId and totalAmount =! null
+    public DetailEntity getDetailsByCarIdAndTotalAmountNotNull(Long carId){
+        DetailEntity details = detailRepository.findByCarIdAndTotalAmountIsNull(carId);
+        return details;
+    }
+
 
 
 

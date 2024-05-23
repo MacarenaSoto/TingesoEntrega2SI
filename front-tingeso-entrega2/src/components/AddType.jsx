@@ -11,7 +11,7 @@ const AddType = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8081/api/v2/types/add",
+        "http://localhost:6081/api/v2/types/add",
         {
             name: name,
         }
