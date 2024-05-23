@@ -1,4 +1,4 @@
-/* package tingeso.carservice.config;
+package tingeso.carservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,4 +19,3 @@ public class CorsConfig implements WebMvcConfigurer {
     }
 
 }
- */
