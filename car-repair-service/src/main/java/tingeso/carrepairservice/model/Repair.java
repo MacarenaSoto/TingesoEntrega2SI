@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Repair {
 
+    private Long id;
     private String name;
-    private int ammount;
+    private int amount;
     private Long engineId;
 
 }

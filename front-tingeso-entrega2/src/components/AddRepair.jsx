@@ -161,7 +161,22 @@ const AddRepair = () => {
         }
       );
 
-      console.log("Respuesta del backend:", response.data);
+      console.log("Respuesta del backend para carrepair:", response.data);
+
+      const response2 = await axios.post(
+        "http://localhost:6081/api/v2/details/add",
+        {
+          carId: id,
+          repairIds: reparaciones,
+          numberRepairs: numReparaciones,
+          admissionDate: formattedAdmissionDate,
+          admissionHour: formattedAdmissionHour,
+        }
+      );
+
+      console.log("Respuesta del backend para details:", response2.data);
+
+     
 
       // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
     } catch (error) {

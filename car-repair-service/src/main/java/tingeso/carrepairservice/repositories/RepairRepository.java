@@ -16,5 +16,5 @@ public interface RepairRepository extends JpaRepository<RepairEntity, Long>{
     // Para obtener las reparaciones más recientes, a través de las que aún tienen
     // la fecha real de salida vacía por id
     @Query("SELECT r FROM RepairEntity r WHERE r.realExitDate IS NULL AND r.carId = :carId")
-    List<RepairEntity> findByCarIdAndRealExitDateIsNull(Long carId);
+    RepairEntity findByCarIdAndRealExitDateIsNull(Long carId);
 }

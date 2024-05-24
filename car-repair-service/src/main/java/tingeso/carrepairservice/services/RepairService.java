@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
 
 
@@ -36,7 +35,7 @@ public class RepairService {
         return repairRepository.findByDetailId(detailId);
     }
 
-    public List<RepairEntity> getRepairsByCarIdAndRealExitDateIsNull(Long carId){
+    public RepairEntity getRepairsByCarIdAndRealExitDateIsNull(Long carId){
         return  repairRepository.findByCarIdAndRealExitDateIsNull(carId);
     }
 
@@ -78,11 +77,14 @@ public class RepairService {
 
     //updateRepairByCarId
     public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair){
-        RepairEntity repairToUpdate = getRepairsByCarIdAndRealExitDateIsNull(carId).get(0);
+        RepairEntity repairToUpdate = getRepairsByCarIdAndRealExitDateIsNull(carId);
         repairToUpdate.setRealExitDate(repair.getRealExitDate());
         repairToUpdate.setRealExitHour(repair.getRealExitHour());
+        repairToUpdate.setDetailId(repair.getDetailId());
         return updateRepair(repairToUpdate);
     }
+
+    
 
 
 

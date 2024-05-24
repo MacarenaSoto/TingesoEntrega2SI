@@ -78,5 +78,16 @@ public class RepairController {
         }
     }
 
+    //obtener reparaciones por carId y realExitDate = null
+    @GetMapping("/car/{carId}")
+    public ResponseEntity<RepairEntity> getRepairsByCarIdAndRealExitDateIsNull(@PathVariable Long carId) {
+        try {
+            RepairEntity repair = repairService.getRepairsByCarIdAndRealExitDateIsNull(carId);
+            return ResponseEntity.ok(repair);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }

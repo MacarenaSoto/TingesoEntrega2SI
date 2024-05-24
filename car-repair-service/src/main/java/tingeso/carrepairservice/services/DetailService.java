@@ -55,6 +55,14 @@ public class DetailService {
         return details;
     }
 
+   /*  //updateDetailByCarId
+    public DetailEntity updateDetailByCarId(Long carId, DetailEntity detail){
+        DetailEntity detailToUpdate = getDetailsByCarIdAndTotalAmountNotNull(carId);
+        detailToUpdate.setTotalAmount(detail.getTotalAmount());
+        detailToUpdate.setAdmissionDate(detail.getAdmissionDate());
+        return updateDetail(detailToUpdate);
+    } */
+
 
 
 

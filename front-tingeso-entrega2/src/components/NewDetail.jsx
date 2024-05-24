@@ -27,6 +27,9 @@ const NewDetail = () => {
   const [bonusOptions, setBonusOptions] = useState([]);
   const [selectedBonus, setSelectedBonus] = useState("");
   const [id, setCarId] = useState(null);
+  const [numberRepairs, setNumberRepairs] = useState(1);
+  const [admissionDate, setAdmissionDate] = useState(null);
+  const [admissionHour, setAdmissionHour] = useState("");
 
 
   const fetchCarId = async (patent) => {
@@ -43,16 +46,42 @@ const NewDetail = () => {
 
       // Actualizar el estado con el carId obtenido
       setCarId(carId);
+
+     
       console.log("CarId set successfully:", carId);
     } catch (error) {
       console.error("Error fetching carId:", error);
     }
   };
 
+  const fetchNumberRepairs = async (patent) => {
+    try {
+      console.log("Fetching numberRepairs for patent:", patent);
+      // Realizar una solicitud para obtener el objeto completo del automóvil basado en la patente
+      const carResponse = await axios.get(
+        `http://localhost:6081/api/v2/carrepairs/car/${id}`
+      );
+      const numberRepairs = carResponse.data.numberRepairs;
+      const admissionDate = carResponse.data.admissionDate;
+      const admissionHour = carResponse.data.admissionHour;
+
+      console.log("Este es el numberRepairs:", numberRepairs);
+
+      // Actualizar el estado con el carId obtenido
+      setNumberRepairs(numberRepairs);
+
+      console.log("numberRepairs set successfully:", numberRepairs);
+    } catch (error) {
+      console.error("Error fetching numberRepairs:", error);
+    }
+  };
+
+
   const handlePatentChange = (e) => {
     const { value } = e.target;
     setPatent(value);
     fetchCarId(value);
+    fetchNumberRepairs(value);
   };
 
   useEffect(() => {
@@ -112,52 +141,36 @@ const NewDetail = () => {
         selectedBonus: selectedBonus,
       });
 
-      
-/* 
-      //Lo que mando al back de details
-      const respondeData1 ={
-        carId: id,
-      };
-
-      //Lo que mando al back de repairs
-      const respondeData2 ={
-        realExitDate: formattedRealExitDate,
-        realExitHour: formattedRealExitHour,
-      };
-
-      const respondefirst = await axios.post(
-        "http://localhost:6081/api/v2/details/add",
-        respondeData1
-      );
-
-      console.log("Respuesta del primer backend:", respondefirst.data);
-
-      const responsesecond = await axios.post(
-        "http://localhost:6081/api/v2/carrepairs/add",
-        respondeData2
-      );
-
-      console.log("Respuesta del segundo backend:", responsesecond.data); */
       console.log("2daaaaaaaaaaaaaaaaaa");
 
-       const response = await axios.post(
+     /*  const response = await axios.post(//ESTE VA A TENER QUE SER UN PUT!!!!!!!!!!!!!!!!!!!!!!! crear la parte del back aquí
         `http://localhost:6081/api/v2/details/add`,
         {
-          carId: id,
+          admissionDate: admissionDate,
+          admissionHour: admissionHour,
         }
-      ); 
+      );
 
-      console.log("Respuesta del backend:", response.data);
+      // Asumiendo que el ID está en la propiedad `id` del objeto devuelto
+      const newDetailId = response.data.id;
 
-      const response2 = await axios.post(
+      console.log("ID del nuevo detalle creado:", newDetailId);
+
+      // Ahora puedes usar `newDetailId` para la siguiente solicitud
+      console.log("Enviando ID del detalle a otro microservicio...");
+
+      console.log("Respuesta del backend1 :", response.data);
+ */
+      const response2 = await axios.put(
         `http://localhost:6081/api/v2/carrepairs/update/${id}`,
         {
           realExitDate: formattedRealExitDate,
           realExitHour: formattedRealExitHour,
+          //detailId : newDetailId,
         }
       );
 
-      console.log("Respuesta del backend:", response2.data);
+      console.log("Respuesta del backend2 :", response2.data);
 
       // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
       //history.push('/detail');
@@ -221,7 +234,7 @@ const NewDetail = () => {
                   value={selectedBonus}
                   onChange={(e) => {
                     const value = e.target.value;
-                    const selectedValue = value !== "" ?  parseInt(value) :"0"; // Si es una cadena vacía, asigna "0"
+                    const selectedValue = value !== "" ? parseInt(value) : "0"; // Si es una cadena vacía, asigna "0"
 
                     setSelectedBonus(selectedValue);
                     console.log(
