@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
@@ -8,16 +8,38 @@ const AddCar = () => {
   const [brandId, setBrandId] = useState("");
   const [number, setNumber] = useState("");
   const [amount, setAmount] = useState("");
+  const [brandOptions, setBrand] = useState([]);
+  const [brandName, setBrandName] = useState("");
+
+
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const response = await axios.get("http://localhost:6081/api/v2/brands/all");
+        setBrand(response.data);  // Asumiendo que `response.data` es el array de marcas
+        console.log("Brands response data:", response.data);
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchBrands();
+  }, []);
+
+
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const response = await axios.post(
-        "http://localhost:8090/api/v1/bonuss/add",
+        "http://localhost:6081/api/v2/bonus/add",
         {
-            brandId: brandId,
-            number: number,
-            amount: amount,
+          brandId: brandId,
+          number: number,
+          amount: amount,
+          brand: brandName,
         }
       );
 
@@ -36,20 +58,39 @@ const AddCar = () => {
       <div className="add-car-card">
         <form onSubmit={handleSubmit} className="add-car-form">
           <div className="form">
-          <label>
+            <label>
               Marca:
               <select
                 value={brandId}
-                onChange={(e) => setBrandId(e.target.value)}
+                onChange={(e) => {
+                  const selectedBrandValue = e.target.value;
+                  setBrandId(selectedBrandValue);
+                  console.log("selectedBrandValue", selectedBrandValue);
+                
+                  // Convertir a número si los ID son numéricos
+                  const selectedBrandId = Number(selectedBrandValue);
+                  console.log("selectedBrandId", selectedBrandId);
+                
+                  // Asegurarse de comparar correctamente según el tipo de dato de brand.id
+                  const selectedBrand = brandOptions.find((brand) => brand.id === selectedBrandId);
+                  console.log("selectedBrandName", selectedBrand);
+                
+                  if (selectedBrand) {
+                    setBrandName(selectedBrand.name);
+                  } else {
+                    setBrandName("yyyy"); // Configura esto para manejar marcas no encontradas
+                  }
+                }}
+                
+
+
               >
                 <option value="">Selecciona una marca</option>
-                <option value="1">Toyota</option>
-                <option value="4">Ford</option>
-                <option value="6">Hyundai</option>
-                <option value="3">Honda</option>
-                <option value="0">No aplica</option>
-                
-                
+                {brandOptions.map((brand) => (
+                  <option key={brand.id} value={brand.id}>
+                    {brand.name}
+                  </option>
+                ))}
               </select>
             </label>
             <label>
@@ -68,7 +109,7 @@ const AddCar = () => {
                 onChange={(e) => setAmount(e.target.value)}
               />
             </label>
-           
+
             {/* <FormControl fullWidth>
               <TextField
                 id="month"
