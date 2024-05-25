@@ -3,7 +3,10 @@ package tingeso.carrepairservice.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
 import java.util.List;
+import java.util.Date;
 
 import tingeso.carrepairservice.entities.RepairEntity;
 import tingeso.carrepairservice.services.RepairService;
@@ -71,12 +74,25 @@ public class RepairController {
     @PutMapping("/update/{carId}")
     public ResponseEntity<RepairEntity> updateRepairByCarId(@PathVariable Long carId, @RequestBody RepairEntity repairEntity) {
         try {
+
             RepairEntity repair = repairService.updateRepairByCarId(carId, repairEntity);
             return ResponseEntity.ok(repair);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    /* //update a un repair específico según su carId
+    @PutMapping("/update/{carId}")
+    public ResponseEntity<RepairEntity> updateRepairByCarId(@PathVariable Long carId, @PathVariable Long selectedBonus,@PathVariable int km, @PathVariable Date realExitDate, @RequestBody RepairEntity repairEntity) {
+        try {
+
+            RepairEntity repair = repairService.updateRepairByCarId( carId,  repairEntity , selectedBonus, km ,realExitDate);
+            return ResponseEntity.ok(repair);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    } */
 
     //obtener reparaciones por carId y realExitDate = null
     @GetMapping("/car/{carId}")

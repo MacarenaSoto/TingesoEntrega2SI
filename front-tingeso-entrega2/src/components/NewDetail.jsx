@@ -31,7 +31,6 @@ const NewDetail = () => {
   const [admissionDate, setAdmissionDate] = useState(null);
   const [admissionHour, setAdmissionHour] = useState("");
 
-
   const fetchCarId = async (patent) => {
     try {
       console.log("Fetching carId for patent:", patent);
@@ -47,7 +46,6 @@ const NewDetail = () => {
       // Actualizar el estado con el carId obtenido
       setCarId(carId);
 
-     
       console.log("CarId set successfully:", carId);
     } catch (error) {
       console.error("Error fetching carId:", error);
@@ -76,7 +74,6 @@ const NewDetail = () => {
     }
   };
 
-
   const handlePatentChange = (e) => {
     const { value } = e.target;
     setPatent(value);
@@ -88,7 +85,7 @@ const NewDetail = () => {
     const fetchBonusOptions = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:6081/api/v2/bonuss/all"
+          "http://localhost:6081/api/v2/bonus/all"
         );
         setBonusOptions(response.data);
       } catch (error) {
@@ -137,44 +134,48 @@ const NewDetail = () => {
         carId: id,
         realExitDate: formattedRealExitDate,
         realExitHour: formattedRealExitHour,
-        km: km,
+        kilometrajem: km,
         selectedBonus: selectedBonus,
       });
 
       console.log("2daaaaaaaaaaaaaaaaaa");
 
-     /*  const response = await axios.post(//ESTE VA A TENER QUE SER UN PUT!!!!!!!!!!!!!!!!!!!!!!! crear la parte del back aquí
-        `http://localhost:6081/api/v2/details/add`,
+      
+
+
+      console.log("Valores a enviar en la solicitud:");
+      console.log("km:", km, typeof km);
+      console.log("selectedBonus:", selectedBonus, typeof selectedBonus);
+      console.log(
+        "formattedRealExitDate:",
+        formattedRealExitDate,
+        typeof formattedRealExitDate
+      );
+
+      const response3 = await axios.put(
+        `http://localhost:6081/api/v2/details/update/${id}/${km}/${formattedRealExitDate}/${selectedBonus}`,
         {
-          admissionDate: admissionDate,
-          admissionHour: admissionHour,
+          
         }
       );
 
-      // Asumiendo que el ID está en la propiedad `id` del objeto devuelto
-      const newDetailId = response.data.id;
 
-      console.log("ID del nuevo detalle creado:", newDetailId);
-
-      // Ahora puedes usar `newDetailId` para la siguiente solicitud
-      console.log("Enviando ID del detalle a otro microservicio...");
-
-      console.log("Respuesta del backend1 :", response.data);
- */
-      const response2 = await axios.put(
+      /* const response2 = await axios.put(
         `http://localhost:6081/api/v2/carrepairs/update/${id}`,
         {
           realExitDate: formattedRealExitDate,
           realExitHour: formattedRealExitHour,
           //detailId : newDetailId,
         }
-      );
+      ); */
+
 
       console.log("Respuesta del backend2 :", response2.data);
 
+      console.log("Respuesta del backend3 :", response3.data);
+
       // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
       //history.push('/detail');
-
 
       let bonusToSend = selectedBonus; // Almacena el valor seleccionado del bono
 
@@ -211,9 +212,9 @@ const NewDetail = () => {
               <label>
                 Kilometraje del vehículo:
                 <input
-                  type="text"
+                  type="number"
                   value={km}
-                  onChange={(e) => setKm(e.target.value)}
+                  onChange={(e) => setKm(parseInt(e.target.value))}
                 />
               </label>
               <label>
@@ -237,9 +238,10 @@ const NewDetail = () => {
                     const selectedValue = value !== "" ? parseInt(value) : "0"; // Si es una cadena vacía, asigna "0"
 
                     setSelectedBonus(selectedValue);
+                    console.log("Se seleccionó el bono : ", selectedValue);
                     console.log(
-                      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASe seleccionó el bono : ",
-                      selectedValue
+                      "Se seleccionó el bonoooooooooooooooo final  : ",
+                      selectedBonus
                     );
                   }}
                 >

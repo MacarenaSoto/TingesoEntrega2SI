@@ -3,7 +3,9 @@ package tingeso.carrepairservice.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Date;
 
 import tingeso.carrepairservice.entities.DetailEntity;
 import tingeso.carrepairservice.services.DetailService;
@@ -61,6 +63,21 @@ public class DetailController {
         try {
             boolean deleted = detailService.deleteDetail(id);
             return ResponseEntity.ok(deleted);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+     //update a un repair específico según su carId
+    @PutMapping("/update/{carId}/{kilometraje}/{realExitDate}/{selectedBonus}")
+    public ResponseEntity<DetailEntity> updateDetailByCarId(@PathVariable Long carId, @PathVariable int kilometraje, @PathVariable String realExitDate, @PathVariable Long selectedBonus){
+        System.out.println("...................--.-.-.--..-.--.-.ENTRÓ AL controller de updateDetailByCarId para actualizar el Detail");
+        System.out.println("carId: "+carId);
+        System.out.println("km: "+kilometraje);
+        System.out.println("realExitDate: "+realExitDate);
+        try {
+            DetailEntity detail = detailService.updateDetailByCarId(carId, kilometraje, realExitDate, selectedBonus);
+            return ResponseEntity.ok(detail);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

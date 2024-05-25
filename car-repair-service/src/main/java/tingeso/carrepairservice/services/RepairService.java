@@ -18,6 +18,12 @@ public class RepairService {
     @Autowired
     RepairRepository repairRepository;
 
+    @Autowired
+    AppliedDiscountsService appliedDiscountsService;
+
+    @Autowired
+    AppliedSurchargeService appliedSurchargeService;
+
     //métodos de repository
     public ArrayList<RepairEntity> getRepairs(){
         return (ArrayList<RepairEntity>) repairRepository.findAll();
@@ -76,13 +82,55 @@ public class RepairService {
     }
 
     //updateRepairByCarId
-    public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair){
+    public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair ){
         RepairEntity repairToUpdate = getRepairsByCarIdAndRealExitDateIsNull(carId);
         repairToUpdate.setRealExitDate(repair.getRealExitDate());
         repairToUpdate.setRealExitHour(repair.getRealExitHour());
-        repairToUpdate.setDetailId(repair.getDetailId());
+        
+        //actualiza el discountAmount que obtiene de appliedDiscounts
+        //repairToUpdate.setDiscountAmount(detailService.getTotalDiscount(carId,selectedBonus));
+
+
+        //actualiza el surchargeAmount que obtiene de appliedSurcharge
+        //repairToUpdate.setSurchargeAmount(detailService.getTotalSurcharge(carId, km, realExitDate));
+
+
+        //actualiza el finalAmount
+        //repairToUpdate.setFinalAmount(detailService.getFinalAmount(carId, km, realExitDate, selectedBonus));
+
+
+        //actualiza el iva
+        //repairToUpdate.setIva(detailService.getIva(carId, km, realExitDate, selectedBonus));
+        
+        System.out.println("....................................................................Se actualizó la reparación con id: "+repairToUpdate.getId());
         return updateRepair(repairToUpdate);
     }
+
+
+   /*  //updateRepairByCarId
+    public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair, Long selectedBonus, int km, Date realExitDate){
+        RepairEntity repairToUpdate = getRepairsByCarIdAndRealExitDateIsNull(carId);
+        repairToUpdate.setRealExitDate(repair.getRealExitDate());
+        repairToUpdate.setRealExitHour(repair.getRealExitHour());
+        
+
+
+        //actualiza el discountAmount que obtiene de appliedDiscounts
+        //repairToUpdate.setDiscountAmount(detailService.getTotalDiscount(carId,selectedBonus));
+
+
+        //actualiza el surchargeAmount que obtiene de appliedSurcharge
+        //repairToUpdate.setSurchargeAmount(detailService.getTotalSurcharge(carId, km, realExitDate));
+
+
+        //actualiza el finalAmount
+        //repairToUpdate.setFinalAmount(detailService.getFinalAmount(carId, km, realExitDate, selectedBonus));
+
+
+        //actualiza el iva
+        //repairToUpdate.setIva(detailService.getIva(carId, km, realExitDate, selectedBonus));
+        return updateRepair(repairToUpdate);
+    } */
 
     
 

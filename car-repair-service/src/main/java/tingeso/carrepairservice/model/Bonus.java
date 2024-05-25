@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Repair {
+
+public class Bonus {
 
     private Long id;
-    private String name;
-    private int ammount;
-    private Long engineId;
+    private String brand;
+    private Long brandId;
+    private int number;
+    private int amount;
 
 }

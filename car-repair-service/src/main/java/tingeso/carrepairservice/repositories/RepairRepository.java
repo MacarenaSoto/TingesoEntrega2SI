@@ -1,5 +1,6 @@
 package tingeso.carrepairservice.repositories;
 
+import tingeso.carrepairservice.entities.DetailEntity;
 import tingeso.carrepairservice.entities.RepairEntity;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,6 @@ public interface RepairRepository extends JpaRepository<RepairEntity, Long>{
     // la fecha real de salida vacía por id
     @Query("SELECT r FROM RepairEntity r WHERE r.realExitDate IS NULL AND r.carId = :carId")
     RepairEntity findByCarIdAndRealExitDateIsNull(Long carId);
+
+
 }

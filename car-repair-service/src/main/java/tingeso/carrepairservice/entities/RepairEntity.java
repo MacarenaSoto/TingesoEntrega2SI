@@ -27,10 +27,10 @@ public class RepairEntity {
     private LocalTime realExitHour;
     private Long carId;
     private Long detailId;
-    private int discountAmount;
-    private int surchargeAmount;
-    private int finalAmount;
-    private int iva;
+    private double discountAmount;
+    private double surchargeAmount;
+    private double finalAmount;
+    private double iva;
     private int numberRepairs;//dejar o quitar???? no es necesario sería un dato más no más
 
 
