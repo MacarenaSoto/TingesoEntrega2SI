@@ -13,8 +13,8 @@ public class RepairService {
     @Autowired
     RepairRepository repairRepository;
 
-    public ArrayList<RepairEntity> getRepairs(){
-        return (ArrayList<RepairEntity>) repairRepository.findAll();
+    public List<RepairEntity> getRepairs(){
+        return repairRepository.findAll();
     }
 
     public RepairEntity getRepairById(Long id){

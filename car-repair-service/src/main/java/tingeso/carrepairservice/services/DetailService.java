@@ -9,6 +9,7 @@ import tingeso.carrepairservice.model.Car;
 import tingeso.carrepairservice.model.Bonus;
 import tingeso.carrepairservice.model.Repair;
 
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.text.ParseException;
+import java.util.Collections;
 
 
 import org.springframework.http.HttpMethod;
@@ -36,7 +38,7 @@ public class DetailService {
     DetailRepository detailRepository;
 
     @Autowired
-    private RestTemplate restTemplate;
+    RestTemplate restTemplate;
 
     @Autowired
     AppliedDiscountsService appliedDiscountsService;
@@ -89,21 +91,47 @@ public class DetailService {
 
     //findByCarIdAndRealExitDateIsNull que tiene repairService 
 
-    /* //Así lo tenía antes
+   /*   //Así lo tenía antes
     //Obtiene las reparaciones del MS2
     public List<Repair> getRepairs(){
         System.out.println("Entra a getRepairs, que es la que le pide cosas al MS2");
         List<Repair> repairs = restTemplate.getForObject("http://repair-service/api/v2/repairs/all", List.class);
-        System.out.println("dentro de getRepairs , repairs: "+repairs);
+        System.out.println("dentro de getRepairs , repairs: "+repairs.get(0));
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ");
         return repairs;
-    } */
+    }  */
 
-    public List<Repair> getRepairs(){
+
+    public List<Repair> getRepairs() {
+    System.out.println("Entra a getRepairs, que es la que le pide cosas al MS2");
+    ParameterizedTypeReference<List<Repair>> responseType = new ParameterizedTypeReference<List<Repair>>() {};
+    System.out.println("dentro de getRepairs SE LOGRÓOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO, responseType: " + responseType);
+    
+    try {
+        ResponseEntity<List<Repair>> responseEntity = restTemplate.exchange(
+            "http://repair-service/api/v2/repairs/all", 
+            HttpMethod.GET, 
+            null, 
+            responseType
+        );
+        System.out.println("dentro de getRepairs, responseEntity: " + responseEntity);
+        List<Repair> repairs = responseEntity.getBody();
+        System.out.println("dentro de getRepairs, repairs: " + repairs);
+        return repairs;
+    } catch (RestClientException e) {
+        System.err.println("Error durante la llamada a restTemplate.exchange: " + e.getMessage());
+        e.printStackTrace();
+        return Collections.emptyList(); // o lanza una excepción según tu lógica de negocio
+    }
+}
+
+
+    /*  public List<Repair> getRepairs(){
         System.out.println("Entra a getRepairs, que es la que le pide cosas al MS2");
 
         // Realiza la solicitud al servicio de reparaciones
         ResponseEntity<List<Repair>> responseEntity = restTemplate.exchange(
-            "http://repair-service/api/v2/repairs/all",
+            "http://repair-service:6081/api/v2/repairs/all",
             HttpMethod.GET,
             null,
             new ParameterizedTypeReference<List<Repair>>() {}
@@ -114,7 +142,7 @@ public class DetailService {
 
         System.out.println("dentro de getRepairs, repairs: " + repairs);
         return repairs;
-    }
+    }  */
 
 
 

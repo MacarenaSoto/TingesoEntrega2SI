@@ -22,9 +22,11 @@ public class RepairController {
     @GetMapping("/all")
     public ResponseEntity<List<RepairEntity>> getAllRepairs() {
         try {
+            System.out.println("Impresión prueba jose");
             List<RepairEntity> repairs = repairService.getRepairs();
             return ResponseEntity.ok(repairs);
         } catch (Exception e) {
+            System.out.println("Impresión prueba jose2");
             return ResponseEntity.notFound().build();
         }
 
