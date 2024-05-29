@@ -9,5 +9,4 @@ eureka:
   instance:
     #preferIpAddress: true
     #instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-    instance:
-      hostname: localhost
+    hostname: localhost

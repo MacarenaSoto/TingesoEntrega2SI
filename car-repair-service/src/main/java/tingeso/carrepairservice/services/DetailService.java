@@ -109,7 +109,7 @@ public class DetailService {
     
     try {
         ResponseEntity<List<Repair>> responseEntity = restTemplate.exchange(
-            "http://REPAIR-SERVICE/api/v2/repairs/all", 
+            "http://repair-service/api/v2/repairs/all", 
             HttpMethod.GET, 
             null, 
             responseType
