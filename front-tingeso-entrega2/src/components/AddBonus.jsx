@@ -21,13 +21,13 @@ const AddCar = () => {
       } catch (error) {
         console.error("Error fetching brands:", error);
       }
-    };
+      };
 
     fetchBrands();
   }, []);
 
 
-
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();

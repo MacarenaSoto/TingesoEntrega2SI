@@ -1,15 +1,21 @@
 package tingeso.carrepairservice.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Collections;
 import java.util.Date;
 
 import tingeso.carrepairservice.entities.RepairEntity;
+import tingeso.carrepairservice.model.Repair;
 import tingeso.carrepairservice.services.RepairService;
+
 
 @RestController
 @RequestMapping("/api/v2/carrepairs")
@@ -18,6 +24,9 @@ public class RepairController {
 
     @Autowired
     RepairService repairService;
+    
+    @Autowired
+    RestTemplate restTemplate;
 
     @GetMapping("/all")
     public ResponseEntity<List<RepairEntity>> getAllRepairs() {
@@ -104,6 +113,29 @@ public class RepairController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/test")
+    public List<Repair> testRepairs() {
+        ParameterizedTypeReference<List<Repair>> responseType = new ParameterizedTypeReference<List<Repair>>() {};
+
+        try {
+            ResponseEntity<List<Repair>> responseEntity = restTemplate.exchange(
+                "http://repair-service/api/v2/repairs/all", 
+                HttpMethod.GET, 
+                null, 
+                responseType
+            );
+            System.out.println("dentro de getRepairs, responseEntity: " + responseEntity);
+            List<Repair> repairs = responseEntity.getBody();
+            System.out.println("dentro de getRepairs, repairs: " + repairs);
+            return repairs;
+        } catch (RestClientException e) {
+            System.err.println("Error durante la llamada a restTemplate.exchange: " + e.getMessage());
+            e.printStackTrace();
+            return Collections.emptyList(); // o lanza una excepción según tu lógica de negocio
+        }
+    }
+    
 
 
 }
