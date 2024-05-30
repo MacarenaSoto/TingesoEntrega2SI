@@ -19,8 +19,8 @@ public class AppliedDiscountsService {
     @Autowired
     AppliedDiscountsRepository appliedDiscountsRepository;
 
-     @Autowired
-    RestTemplate restTemplate; 
+    /*  @Autowired
+    RestTemplate restTemplate;  */
 
     public ArrayList<AppliedDiscountsEntity> getAppliedDiscounts(){
         return (ArrayList<AppliedDiscountsEntity>) appliedDiscountsRepository.findAll();

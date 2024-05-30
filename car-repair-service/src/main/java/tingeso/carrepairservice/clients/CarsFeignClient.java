@@ -2,17 +2,20 @@ package tingeso.carrepairservice.clients;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 
+import tingeso.carrepairservice.requests.RequestCar;
+import tingeso.carrepairservice.configurations.FeignClientConfig;
+
 @FeignClient(value = "car-service",
-        path = "/api/v2/cars/all")
+        path = "/api/v2/cars",
+        configuration = FeignClientConfig.class)
 
 
 public interface CarsFeignClient {
 
-    @GetMapping("/probando")
-    ArrayList<Object> car(@RequestBody Object object);
+    @GetMapping("/all")
+    ArrayList<RequestCar> car();
 
 }

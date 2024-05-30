@@ -25,8 +25,8 @@ public class RepairController {
     @Autowired
     RepairService repairService;
     
-    @Autowired
-    RestTemplate restTemplate; 
+    /* @Autowired
+    RestTemplate restTemplate;  */
 
     @GetMapping("/all")
     public ResponseEntity<List<RepairEntity>> getAllRepairs() {
@@ -114,7 +114,7 @@ public class RepairController {
         }
     }
 
-     @GetMapping("/test")
+    /*  @GetMapping("/test")
     public List<Repair> testRepairs() {
         ParameterizedTypeReference<List<Repair>> responseType = new ParameterizedTypeReference<List<Repair>>() {};
 
@@ -134,7 +134,7 @@ public class RepairController {
             e.printStackTrace();
             return Collections.emptyList(); // o lanza una excepción según tu lógica de negocio
         }
-    } 
+    }  */
     
 
 
