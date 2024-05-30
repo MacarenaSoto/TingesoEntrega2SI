@@ -126,7 +126,7 @@ public class DetailService {
 }
 
 
-    /*  public List<Repair> getRepairs(){
+     /*  public List<Repair> getRepairs(){
         System.out.println("Entra a getRepairs, que es la que le pide cosas al MS2");
 
         // Realiza la solicitud al servicio de reparaciones
@@ -142,7 +142,7 @@ public class DetailService {
 
         System.out.println("dentro de getRepairs, repairs: " + repairs);
         return repairs;
-    }  */
+    }  */ 
 
 
 
