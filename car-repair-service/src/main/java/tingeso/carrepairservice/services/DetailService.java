@@ -179,17 +179,22 @@ public class DetailService {
 
     // Método que obtiene el monto total de las reparaciones base
     public double getInitialAmount(Long carId) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getInitialAmount ");
         DetailEntity detail = getDetailsByCarIdAndTotalAmountNull(carId);
+        System.out.println("Detail: " + detail);
         List<Long> repairIds = detail.getRepairIds();
+        System.out.println("RepairIds: " + repairIds);
         List<RequestRepair> repairs = getRepairs();
+        System.out.println("Repairs: " + repairs);
         double initialAmount = 0;
         for (int i = 0; i < repairIds.size(); i++) {
             for (int j = 0; j < repairs.size(); j++) {
-                if (repairIds.get(i) == repairs.get(j).getId()) {
+                if (repairIds.get(i).equals( repairs.get(j).getId())) {
                     initialAmount += repairs.get(j).getAmmount();
                 }
             }
         }
+        System.out.println("initialAmount: " + initialAmount);
         return initialAmount;
     }
 
@@ -427,15 +432,20 @@ public class DetailService {
     // Método que calcula el descuento por cantidad de reparaciones que ha tenido el
     // auto
     public double getDiscountByNumberRepairs(Long carId) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getDiscountByNumberRepairs ");
         double discountByNumberRepairs = 0;
         double initialAmount = getInitialAmount(carId);
+        System.out.println("initialAmount: " + initialAmount);
         // obtener el engineId del auto de getCarById
         RequestCar car = getCarById(carId);
+        System.out.println("car: " + car);
         Long engineId = car.getEngineId();
+        System.out.println("engineId: " + engineId);
         // buscar en detalle, los que tengan = carId
         List<DetailEntity> details = getDetailsByCarId(carId);
         System.out.println("DETAILS de ese auto: " + details);
-        int repairsN = details.size();
+        //int repairsN = details.size();
+        int repairsN = 0;
         // recorro esos y obtengo repairsN, y los sumo
         for (DetailEntity detail : details) {
             repairsN += detail.getRepairIds().size();
@@ -443,19 +453,25 @@ public class DetailService {
         System.out.println("numberRepairs: " + repairsN);
 
         if (repairsN > 0 && repairsN <= 2) {
+            System.out.println("Entra al if de repairsN > 0 && repairsN <= 2");
             if (engineId.equals(1L)) {// Gasolina
                 discountByNumberRepairs = initialAmount * 0.05;
+                System.out.println("discountByNumberRepairs: " + discountByNumberRepairs);
             }
             if (engineId.equals(2L)) {// Diésel
                 discountByNumberRepairs = initialAmount * 0.07;
+                System.out.println("discountByNumberRepairs: " + discountByNumberRepairs);
             }
             if (engineId.equals(3L)) {// Híbrido
                 discountByNumberRepairs = initialAmount * 0.1;
+                System.out.println("discountByNumberRepairs: " + discountByNumberRepairs);
             }
             if (engineId.equals(4L)) {// Eléctrico
                 discountByNumberRepairs = initialAmount * 0.08;
+                System.out.println("discountByNumberRepairs: " + discountByNumberRepairs);
             }
         } else if (repairsN >= 3 && repairsN <= 5) {
+            System.out.println("Entra al if de repairsN >= 3 && repairsN <= 5");
             if (engineId.equals(1L)) {// Gasolina
                 discountByNumberRepairs = initialAmount * 0.1;
             }
@@ -469,6 +485,7 @@ public class DetailService {
                 discountByNumberRepairs = initialAmount * 0.13;
             }
         } else if (repairsN >= 6 && repairsN <= 9) {
+            System.out.println("Entra al if de repairsN >= 6 && repairsN <= 9");
             if (engineId.equals(1L)) {// Gasolina
                 discountByNumberRepairs = initialAmount * 0.15;
             }
@@ -482,6 +499,7 @@ public class DetailService {
                 discountByNumberRepairs = initialAmount * 0.18;
             }
         } else if (repairsN >= 10) {
+            System.out.println("Entra al if de repairsN >= 10");
             if (engineId.equals(1L)) {// Gasolina
                 discountByNumberRepairs = initialAmount * 0.2;
             }
@@ -495,6 +513,7 @@ public class DetailService {
                 discountByNumberRepairs = initialAmount * 0.23;
             }
         }
+        System.out.println("discountByNumberRepairs: " + discountByNumberRepairs);
         return discountByNumberRepairs;
     }
 
@@ -586,7 +605,7 @@ public class DetailService {
 
     // Método que suma los valores de repairAmounts
     public int getRepairAmountsSum(Long carId) {
-        System.out.println("........................................................................-.-.-.-.-.-.Entra a la función getRepairAmountsSum ");
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------........................................................................-.-.-.-.-.-.Entra a la función getRepairAmountsSum ");
 
         // busca el detail por carId y totalAmount == null
         DetailEntity detail = getDetailsByCarIdAndTotalAmountNull(carId);
@@ -609,7 +628,7 @@ public class DetailService {
 
     // un arreglo
     public List<String> getRepairNames(Long carId) {
-        System.out.println("Entra a la función getRepairNames ");
+        System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getRepairNames ");
         System.out.println("carId: " + carId);
 
         DetailEntity detail = getDetailsByCarIdAndTotalAmountNull(carId);
@@ -650,7 +669,7 @@ public class DetailService {
     // Método que aplica los descuentos y recargos a un auto
 
     public double getFinalAmountPrevious(Long carId, double km, Date realExitDate, Long selectedBonus) {
-        System.out.println(" 4444444444444444444444444444 ENTRÓ A LA FX DE getFinalAmountPrevious ");
+        System.out.println(" -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ENTRÓ A LA FX DE getFinalAmountPrevious ");
 
         double initialAmount = getRepairAmountsSum(carId);
         System.out.println("44444444444444444444444444444444 initialAmount: " + initialAmount);
@@ -684,6 +703,7 @@ public class DetailService {
     // Método que calcula el IVA
 
     public double getIva(Long carId, double km, Date realExitDate, Long selectedBonus) {
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- Entra a la función getIva ");
         double finalAmount = getFinalAmountPrevious(carId, km, realExitDate,
                 selectedBonus);
         double iva = finalAmount * 0.19;
@@ -693,7 +713,7 @@ public class DetailService {
     // Método que calcula el monto final
 
     public double getFinalAmount(Long carId, double km, Date realExitDate, Long selectedBonus) {
-        System.out.println("??????????????????????????????????????????????????????  ENTRÓ A LA FX DE getFinalAmount ");
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- ENTRÓ A LA FX DE getFinalAmount ");
         System.out.println(" ????? carId: " + carId);
         System.out.println(" ????? km: " + km);
         System.out.println(" ????? realExitDate: " + realExitDate);
@@ -710,7 +730,7 @@ public class DetailService {
     // Método que verifica si un descuento es != 0, devuelve el nombre del descuento
 
     public List<String> getDiscountsNames(Long carId, Long selectedBonus) {
-        System.out.println(".................................................++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   ENTRÓ A LA FX DE getDiscountsNames ");
+        System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  ENTRÓ A LA FX DE getDiscountsNames ");
         double discountByNumberRepairs = getDiscountByNumberRepairs(carId);
         System.out.println("+++++++++++++discountByNumberRepairs: " + discountByNumberRepairs);
         double discountByDay = getDiscountByDay(carId);
@@ -729,6 +749,7 @@ public class DetailService {
         if (discountByBonus != 0) {
             discountsNames.add("Descuento por bono agregado");
         }
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------, SALE DE LA FX DE getDiscountsNames con ---> discountsNames: " + discountsNames);
         return discountsNames;
     }
 
@@ -841,20 +862,24 @@ public class DetailService {
         List<Double> discountAmounts = getDiscountsAmounts(carId, selectedBonus);
         System.out.println("discountAmounts: " + discountAmounts);
 
-        List<String> surchargeNames = getSurchargesNames(carId, km, date,
-                selectedBonus);
+        List<String> surchargeNames = getSurchargesNames(carId, km, date,selectedBonus);
         System.out.println("surchargeNames: " + surchargeNames);
 
-        List<Double> surchargeAmounts = getSurchargesAmounts(carId, km, date,
-                selectedBonus);
+        List<Double> surchargeAmounts = getSurchargesAmounts(carId, km, date,selectedBonus);
         System.out.println("surchargeAmounts: " + surchargeAmounts);
 
         detailToUpdate.setRepairNames(repairNames);
+        System.out.println("AQUÍ DEBERÍA HABER SETEADO LOS NOMBRES DE LAS REPARACIONES ---> detailToUpdate.getRepairNames(): " + detailToUpdate.getRepairNames());
         detailToUpdate.setRepairAmounts(repairAmounts);
+        System.out.println("AQUÍ DEBERÍA HABER SETEADO LOS MONTOS DE LAS REPARACIONES ---> detailToUpdate.getRepairAmounts(): " + detailToUpdate.getRepairAmounts());
         detailToUpdate.setDiscountNames(discountNames);
+        System.out.println("AQUÍ DEBERÍA HABER SETEADO LOS NOMBRES DE LOS DESCUENTOS ---> detailToUpdate.getDiscountNames(): " + detailToUpdate.getDiscountNames());
         detailToUpdate.setDiscountAmounts(discountAmounts);
+        System.out.println("AQUÍ DEBERÍA HABER SETEADO LOS MONTOS DE LOS DESCUENTOS ---> detailToUpdate.getDiscountAmounts(): " + detailToUpdate.getDiscountAmounts());
         detailToUpdate.setSurchargeNames(surchargeNames);
+        System.out.println("AQUÍ DEBERÍA HABER SETEADO LOS NOMBRES DE LOS RECARGOS ---> detailToUpdate.getSurchargeNames(): " + detailToUpdate.getSurchargeNames());
         detailToUpdate.setSurchargeAmounts(surchargeAmounts);
+        System.out.println("AQUÍ DEBERÍA HABER SETEADO LOS MONTOS DE LOS RECARGOS ---> detailToUpdate.getSurchargeAmounts(): " + detailToUpdate.getSurchargeAmounts());
 
         return updateDetail(detailToUpdate);
     }

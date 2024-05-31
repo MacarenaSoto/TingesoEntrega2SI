@@ -55,6 +55,8 @@ public class AppliedDiscountsService {
         return appliedDiscountsRepository.save(appliedDiscounts);
     }
 
+        
+
 
 
 

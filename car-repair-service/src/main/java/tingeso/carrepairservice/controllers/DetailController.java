@@ -152,6 +152,12 @@ public class DetailController {
         return ResponseEntity.ok("Probando3");
     }
 
+    @GetMapping("/fxGetDiscountByNumberRepairs/{carId}")
+    public ResponseEntity<String> fxGetDiscountByNumberRepairs(@PathVariable Long carId){
+        detailService.getDiscountByNumberRepairs(carId);
+        return ResponseEntity.ok("fxGgtDiscountByNumberRepairs");
+    }
+
         
 
   /*   //update a un detail específico según su carId

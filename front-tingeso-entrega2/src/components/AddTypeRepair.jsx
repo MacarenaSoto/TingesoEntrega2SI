@@ -40,7 +40,7 @@ const AddTypeRepair = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v2/repairs/add",
+        "http://localhost:6081/api/v2/repairs/add",
         {
           name: name,
           engineId: engine,
