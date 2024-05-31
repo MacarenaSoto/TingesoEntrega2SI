@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.Date;
 
 import tingeso.carrepairservice.entities.RepairEntity;
-import tingeso.carrepairservice.model.Repair;
 import tingeso.carrepairservice.services.RepairService;
 
 

@@ -4,16 +4,7 @@ import tingeso.carrepairservice.entities.DetailEntity;
 import tingeso.carrepairservice.entities.RepairEntity;
 import tingeso.carrepairservice.repositories.DetailRepository;
 
-import tingeso.carrepairservice.model.Car;
-import tingeso.carrepairservice.model.Bonus;
-import tingeso.carrepairservice.model.Repair;
-
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,9 +14,20 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.text.ParseException;
-import java.util.Collections;
 
-import org.springframework.http.HttpMethod;
+import tingeso.carrepairservice.clients.BrandsFeignClient;
+import tingeso.carrepairservice.clients.CarsFeignClient;
+import tingeso.carrepairservice.clients.TypesFeignClient;
+import tingeso.carrepairservice.clients.EnginesFeignClient;
+import tingeso.carrepairservice.clients.BonusFeignClient;
+import tingeso.carrepairservice.clients.RepairsFeignClient;
+
+import tingeso.carrepairservice.requests.RequestBrand;
+import tingeso.carrepairservice.requests.RequestCar;
+import tingeso.carrepairservice.requests.RequestEngine;
+import tingeso.carrepairservice.requests.RequestType;
+import tingeso.carrepairservice.requests.RequestBonus;
+import tingeso.carrepairservice.requests.RequestRepair;
 
 @Service
 public class DetailService {
@@ -46,6 +48,24 @@ public class DetailService {
 
     @Autowired
     RepairService repairService;
+
+    @Autowired
+    CarsFeignClient carsFeignClient;
+
+    @Autowired
+    BrandsFeignClient brandsFeignClient;
+
+    @Autowired
+    TypesFeignClient typesFeignClient;
+
+    @Autowired
+    EnginesFeignClient enginesFeignClient;
+
+    @Autowired
+    BonusFeignClient bonusesFeignClient;
+
+    @Autowired
+    RepairsFeignClient repairsFeignClient;
 
     public DetailEntity getDetailById(Long id) {
         return detailRepository.findById(id).get();
@@ -85,117 +105,83 @@ public class DetailService {
         List<DetailEntity> details = detailRepository.findAll();
         return details;
     }
-}
 
-    // findByCarIdAndRealExitDateIsNull que tiene repairService
-
-    /*
-     * //Así lo tenía antes
-     * //Obtiene las reparaciones del MS2
-     * public List<Repair> getRepairs(){
-     * System.out.println("Entra a getRepairs, que es la que le pide cosas al MS2");
-     * List<Repair> repairs =
-     * restTemplate.getForObject("http://repair-service/api/v2/repairs/all",
-     * List.class);
-     * System.out.println("dentro de getRepairs , repairs: "+repairs.get(0));
-     * System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ");
-     * return repairs;
-     * }
-     */
-
-    /* public List<Repair> getRepairs() {
-        System.out.println("Entra a getRepairs, que es la que le pide cosas al MS2");
-        ParameterizedTypeReference<List<Repair>> responseType = new ParameterizedTypeReference<List<Repair>>() {
-        };
-        System.out.println(
-                "dentro de getRepairs SE LOGRÓOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO, responseType: "
-                        + responseType);
-
-        try {
-            ResponseEntity<List<Repair>> responseEntity = restTemplate.exchange(
-                    "http://repair-service/api/v2/repairs/all",
-                    HttpMethod.GET,
-                    null,
-                    responseType);
-            System.out.println("dentro de getRepairs, responseEntity: " + responseEntity);
-            List<Repair> repairs = responseEntity.getBody();
-            System.out.println("dentro de getRepairs, repairs: " + repairs);
-            return repairs;
-        } catch (RestClientException e) {
-            System.err.println("Error durante la llamada a restTemplate.exchange: " + e.getMessage());
-            e.printStackTrace();
-            return Collections.emptyList(); // o lanza una excepción según tu lógica de negocio
-        }
-    } */
-
-    /*
-     * public List<Repair> getRepairs(){
-     * System.out.println("Entra a getRepairs, que es la que le pide cosas al MS2");
-     * 
-     * // Realiza la solicitud al servicio de reparaciones
-     * ResponseEntity<List<Repair>> responseEntity = restTemplate.exchange(
-     * "http://repair-service:6081/api/v2/repairs/all",
-     * HttpMethod.GET,
-     * null,
-     * new ParameterizedTypeReference<List<Repair>>() {}
-     * );
-     * 
-     * // Obtiene la lista de reparaciones del cuerpo de la respuesta
-     * List<Repair> repairs = responseEntity.getBody();
-     * 
-     * System.out.println("dentro de getRepairs, repairs: " + repairs);
-     * return repairs;
-     * }
-     */
-
-  /*   // Obtiene los autos del MS1
-    public List<Car> getCars() {
-        List<Car> cars = restTemplate.getForObject("http://car-service/api/v1/cars/all", List.class);
+    // Trae los autos del MS1
+    public ArrayList<RequestCar> getCars() {
+        ArrayList<RequestCar> cars = carsFeignClient.car();
+        System.out.println("cars: " + cars);
         return cars;
     }
 
-    // Obtiene un car del MS1 por id
-    public Car getCarById(Long carId) {
-        Car car = restTemplate.getForObject("http://car-service/api/v2/cars/{id}", Car.class, carId);
-        return car;
-    } */
-    /*
-     * Así lo tiene el profe
-     * 
-     * //Obtiene un car del MS1 por id
-     * public Car getCarById(int id){
-     * Car car = restTemplate.getForObject("http://car-service/api/v1/cars/"+id,
-     * Car.class);
-     * return car;
-     * }
-    
+    // Trae las marcas del MS1
+    public ArrayList<RequestBrand> getBrands() {
+        ArrayList<RequestBrand> brands = brandsFeignClient.brand();
+        System.out.println("brands: " + brands);
+        return brands;
+    }
 
-    // obtiene los bonus del MS2
-    public List<Bonus> getBonuses() {
-        List<Bonus> bonuses = restTemplate.getForObject("http://repair-service/api/v2/bonus/all", List.class);
+    // Trae los tipos del MS1
+    public ArrayList<RequestType> getTypes() {
+        ArrayList<RequestType> types = typesFeignClient.type();
+        System.out.println("types: " + types);
+        return types;
+    }
+
+    // Trae los engines del MS1
+    public ArrayList<RequestEngine> getEngines() {
+        ArrayList<RequestEngine> engines = enginesFeignClient.engine();
+        System.out.println("engines: " + engines);
+        return engines;
+    }
+
+    // Trae los bonus del MS2
+    public ArrayList<RequestBonus> getBonuses() {
+        ArrayList<RequestBonus> bonuses = bonusesFeignClient.bonus();
+        System.out.println("bonuses: " + bonuses);
         return bonuses;
     }
- */
-    /*
-     * //updateDetailByCarId
-     * public DetailEntity updateDetailByCarId(Long carId, DetailEntity detail){
-     * DetailEntity detailToUpdate = getDetailsByCarIdAndTotalAmountNotNull(carId);
-     * detailToUpdate.setTotalAmount(detail.getTotalAmount());
-     * detailToUpdate.setAdmissionDate(detail.getAdmissionDate());
-     * return updateDetail(detailToUpdate);
-     * }
-     */
+
+    // Trae los repairs del MS2
+    public ArrayList<RequestRepair> getRepairs() {
+        ArrayList<RequestRepair> repairs = repairsFeignClient.repair();
+        System.out.println("repairs: " + repairs);
+        return repairs;
+    }
+
+    // PROBAR SI ESTA FUNCIONAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    // getCarById
+    public RequestCar getCarById(Long carId) {
+        ArrayList<RequestCar> cars = getCars();
+        RequestCar car = new RequestCar();
+        for (RequestCar c : cars) {
+            if (c.getId() == carId) {
+                car = c;
+            }
+        }
+        return car;
+
+    }
+
+    // findByCarIdAndRealExitDateIsNull que tiene repairService
+
+    // updateDetailByCarId
+    public DetailEntity updateDetailByCarId(Long carId, DetailEntity detail) {
+        DetailEntity detailToUpdate = getDetailsByCarIdAndTotalAmountNull(carId);
+        detailToUpdate.setTotalAmount(detail.getTotalAmount());
+        detailToUpdate.setAdmissionDate(detail.getAdmissionDate());
+        return updateDetail(detailToUpdate);
+    }
 
     // -------------------------------------------------------------------------------------------------------------
     // MÉTODOS QUE CALCULAN DESCUENTOS Y RECARGOS:
 
     // 1. Métodos para SURCHARGE.....................
 
-  /*   // Método que obtiene el monto total de las reparaciones base
+    // Método que obtiene el monto total de las reparaciones base
     public double getInitialAmount(Long carId) {
         DetailEntity detail = getDetailsByCarIdAndTotalAmountNull(carId);
         List<Long> repairIds = detail.getRepairIds();
-        List<Repair> repairs = getRepairs();
+        List<RequestRepair> repairs = getRepairs();
         double initialAmount = 0;
         for (int i = 0; i < repairIds.size(); i++) {
             for (int j = 0; j < repairs.size(); j++) {
@@ -205,13 +191,13 @@ public class DetailService {
             }
         }
         return initialAmount;
-    } */
+    }
 
-/*     // Recargo por kilometraje
+    // Recargo por kilometraje
     public double getSurchargeByKm(Long carId, double km) {
         double surchargeByKm = 0;
         double initialAmount = getInitialAmount(carId);
-        Car car = getCarById(carId);
+        RequestCar car = getCarById(carId);
         Long type = car.getTypeId();
         if (km > 0 && km <= 5000) {
             if (type.equals(1L)) {// Sedan
@@ -219,13 +205,13 @@ public class DetailService {
             }
             if (type.equals(2L)) {// Hatchback
                 surchargeByKm = initialAmount * 0;
-            }
+            }   
             if (type.equals(3L)) {// SUV
                 surchargeByKm = initialAmount * 0;
             }
             if (type.equals(4L)) {// pickup
                 surchargeByKm = initialAmount * 0;
-            }
+        
             if (type.equals(5L)) {// Furgoneta
                 surchargeByKm = initialAmount * 0;
             }
@@ -234,7 +220,7 @@ public class DetailService {
             if (type.equals(1L)) {// Sedan
                 surchargeByKm = initialAmount * 0.03;
             }
-            if (type.equals(2L)) {// Hatchback
+            if  (type.equals(2L)) {// Hatchback
                 surchargeByKm = initialAmount * 0.03;
             }
             if (type.equals(3L)) {// SUV
@@ -298,8 +284,8 @@ public class DetailService {
                 surchargeByKm = initialAmount * 0.2;
             }
         }
+    }
         return surchargeByKm;
-
     }
 
     // Recargo por Antiguëdad del vehículo
@@ -307,14 +293,14 @@ public class DetailService {
     public double getSurchargeByAge(Long carId) {
         double surchargeByAge = 0;
         double initialAmount = getInitialAmount(carId);
-        Car car = getCarById(carId);
+        RequestCar car = getCarById(carId);
         int year = car.getYear();
         Long type = car.getTypeId();
         // obtener fecha actual:
         Calendar calendar = Calendar.getInstance();
         int currentYear = calendar.get(Calendar.YEAR);
         year = currentYear - year;
-
+  
         if (year > 0 && year <= 5) {
             if (type.equals(1L)) {// Sedan
                 surchargeByAge = initialAmount * 0;
@@ -332,7 +318,7 @@ public class DetailService {
                 surchargeByAge = initialAmount * 0;
             }
         }
-
+  
         if (year > 5 && year <= 10) {
             if (type.equals(1L)) {// Sedan
                 surchargeByAge = initialAmount * 0.05;
@@ -341,7 +327,7 @@ public class DetailService {
                 surchargeByAge = initialAmount * 0.05;
             }
             if (type.equals(3L)) {// SUV
-                surchargeByAge = initialAmount * 0.07;
+                 surchargeByAge = initialAmount * 0.07;
             }
             if (type.equals(4L)) {// pickup
                 surchargeByAge = initialAmount * 0.07;
@@ -350,7 +336,6 @@ public class DetailService {
                 surchargeByAge = initialAmount * 0.07;
             }
         }
-
         if (year > 10 && year <= 15) {
             if (type.equals(1L)) {// Sedan
                 surchargeByAge = initialAmount * 0.09;
@@ -367,8 +352,7 @@ public class DetailService {
             if (type.equals(5L)) {// Furgoneta
                 surchargeByAge = initialAmount * 0.11;
             }
-        }
-
+        } 
         if (year > 15) {
             if (type.equals(1L)) {// Sedan
                 surchargeByAge = initialAmount * 0.15;
@@ -387,7 +371,7 @@ public class DetailService {
             }
         }
         return surchargeByAge;
-    }
+  }
 
     // Recargo por retraso en la recogida del auto
     // Método que calcula el recargo por retraso en la recogida del auto, se aplica
@@ -398,32 +382,30 @@ public class DetailService {
         double initialAmount = getInitialAmount(carId);
         // obtiene repair por carId y realExitDate = null
         RepairEntity repair = repairService.getRepairsByCarIdAndRealExitDateIsNull(carId);
-
+  
         // obtener exitDate de repair
         Date exitDate = repair.getExitDate();
         System.out.println("exitDate: " + exitDate);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(exitDate);
-        int day = calendar.get(Calendar.DAY_OF_YEAR); // retorna el día de la semana como valor numérico (1 = domingo, 2
-                                                      // = lunes, 3 = martes, 4 = miércoles, 5 = jueves, 6 = viernes, 7
-                                                      // = sábado).
-
+        int day = calendar.get(Calendar.DAY_OF_YEAR); // retorna el día de la semana como valor numérico (1 = domingo, 2// = lunes, 3 = martes, 4 = miércoles, 5 = jueves, 6 = viernes, 7// = sábado).
+  
         // obtener realExitDate
         calendar.setTime(realExitDate);
         calendar.setTime(realExitDate);
         int realDay = calendar.get(Calendar.DAY_OF_YEAR);
-
+  
         int delay = realDay - day;
         System.out.println("delay: " + delay);
-
+  
         // OJO QUE DEBO AGREGAR LA CONDICIÓN DE SI ES DENTRO DEL MISMO AÑO, SI PASA A
         // SER OTRO AÑO HAY QUE CAMBIAR EL CÁLCULO
-
+  
         if (delay > 0) {
             surchargeByDelay = initialAmount * 0.05 * delay;
-        }
+            }
         System.out.println("surchargeByDelay: " + surchargeByDelay);
-
+  
         return surchargeByDelay;
     }
 
@@ -448,7 +430,7 @@ public class DetailService {
         double discountByNumberRepairs = 0;
         double initialAmount = getInitialAmount(carId);
         // obtener el engineId del auto de getCarById
-        Car car = getCarById(carId);
+        RequestCar car = getCarById(carId);
         Long engineId = car.getEngineId();
         // buscar en detalle, los que tengan = carId
         List<DetailEntity> details = getDetailsByCarId(carId);
@@ -528,8 +510,8 @@ public class DetailService {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(admissionDate);
         int day = calendar.get(Calendar.DAY_OF_WEEK); // retorna el día de la semana como valor numérico (1 = domingo, 2
-                                                      // = lunes, 3 = martes, 4 = miércoles, 5 = jueves, 6 = viernes, 7
-                                                      // = sábado).
+        // = lunes, 3 = martes, 4 = miércoles, 5 = jueves, 6 = viernes, 7
+        // = sábado).
 
         // obtiene la hora de admisión
         LocalTime admissionHour = detail.getAdmissionHour();
@@ -551,8 +533,8 @@ public class DetailService {
 
         double initialAmount = getInitialAmount(carId);
 
-        List<Bonus> bonuses = getBonuses();
-        for (Bonus bonus : bonuses) {
+        List<RequestBonus> bonuses = getBonuses();
+        for (RequestBonus bonus : bonuses) {
             if (bonus.getId() == selectedBonus) {
                 discountByBonus = initialAmount * bonus.getAmount();
             }
@@ -568,7 +550,8 @@ public class DetailService {
         System.out.println("discountByDay: " + discountByDay);
         double discountByBonus = getDiscountByBonus(carId, selectedBonus);
         System.out.println("discountByBonus: " + discountByBonus);
-        double totalDiscount = discountByNumberRepairs + discountByDay + discountByBonus;
+        double totalDiscount = discountByNumberRepairs + discountByDay +
+                discountByBonus;
         System.out.println("totalDiscount: " + totalDiscount);
         return totalDiscount;
     }
@@ -582,20 +565,20 @@ public class DetailService {
         System.out.println("Detail: " + detail);
         List<Long> repairIds = detail.getRepairIds();
         System.out.println("RepairIds: " + repairIds);
-        List<Repair> repairs = getRepairs();
+        List<RequestRepair> repairs = getRepairs();
         System.out.println("Repairs: " + repairs);
         // busco en repairs las que tengan id = repairIds
         List<Integer> repairAmounts = new ArrayList<>();
         for (int i = 0; i < repairIds.size(); i++) {
             for (int j = 0; j < repairs.size(); j++) {
-                if (repairIds.get(i) == repairs.get(j).getId()) {
+                if (repairIds.get(i).equals(repairs.get(j).getId())) {
                     repairAmounts.add(repairs.get(j).getAmmount());
                 }
                 System.out.println("repairAmounts1: " + repairAmounts);
             }
             System.out.println("repairAmounts2: " + repairAmounts);
         }
-        System.out.println("repairAmounts Final: " + repairAmounts);
+        System.out.println("------------------------------------------------------------repairAmounts Final: " + repairAmounts);
 
         return repairAmounts;
 
@@ -603,11 +586,16 @@ public class DetailService {
 
     // Método que suma los valores de repairAmounts
     public int getRepairAmountsSum(Long carId) {
+        System.out.println("........................................................................-.-.-.-.-.-.Entra a la función getRepairAmountsSum ");
+
         // busca el detail por carId y totalAmount == null
         DetailEntity detail = getDetailsByCarIdAndTotalAmountNull(carId);
+        System.out.println("........................................................................-.-.-.-.-.-.detail: " + detail);
+
         // obtiene los montos de las reparaciones
         List<Integer> repairAmounts = detail.getRepairAmounts();
-        System.out.println("repairAmounts: " + repairAmounts);
+        System.out.println("........................................................................-.-.-.-.-.-.repairAmounts: " + repairAmounts);
+
         // suma los montos de las reparaciones
         int repairAmountsSum = 0;
         for (int i = 0; i < repairAmounts.size(); i++) {
@@ -618,16 +606,21 @@ public class DetailService {
     }
 
     // Método que buscar los nombres de las reparaciones de un auto y las guarda en
+
     // un arreglo
     public List<String> getRepairNames(Long carId) {
         System.out.println("Entra a la función getRepairNames ");
         System.out.println("carId: " + carId);
+
         DetailEntity detail = getDetailsByCarIdAndTotalAmountNull(carId);
         System.out.println("Dentro de la fx getRepairNames , detail: " + detail);
+
         List<Long> repairIds = detail.getRepairIds();
-        System.out.println("Dentro de la fx getRepairNames, repairIds: " + repairIds);
-        List<Repair> repairs = getRepairs();
+        System.out.println("Dentro de la fx getRepairNames, repairIds: " +repairIds);
+
+        List<RequestRepair> repairs = getRepairs();
         System.out.println("Dentro de la fx getRepairNames, repairs: " + repairs);
+
         List<String> repairNames = new ArrayList<>();
         System.out.println("Dentro de la fx getRepairNames, aquí ya crea la lista vacía");
         for (int i = 0; i < repairIds.size(); i++) {
@@ -635,11 +628,19 @@ public class DetailService {
             System.out.println("i: " + i);
             for (int j = 0; j < repairs.size(); j++) {
                 System.out.println("j: " + j);
-                if (repairIds.get(i) == repairs.get(j).getId()) {
+                System.out.println("repairIds.get(i): " + repairIds.get(i));
+                System.out.println("Tipo de dato de repairIds.get(i): " + repairIds.get(i).getClass().getName());
+                System.out.println("repairs.get(j).getId(): " + repairs.get(j).getId());
+                System.out.println("Tipo de dato de repairs.get(j).getId(): " + repairs.get(j).getId().getClass().getName());
+                //imprimir tipo de dato de repairIds.get(i)
+                
+                //imprimir tipo de dato de repairs.get(j).getId()
+                
+                if (repairIds.get(i).equals(repairs.get(j).getId())) {
                     System.out.println("repairIds.get(i): " + repairIds.get(i));
+                    System.out.println("repairs.get(j).getId(): " + repairs.get(j).getId());
                     repairNames.add(repairs.get(j).getName());
-                    System.out.println("repairNames: " + repairNames);
-                }
+                    }   
             }
         }
         System.out.println("repairNames: " + repairNames);
@@ -647,40 +648,75 @@ public class DetailService {
     }
 
     // Método que aplica los descuentos y recargos a un auto
-    public double getFinalAmountPrevious(Long carId, double km, Date realExitDate, Long selectedBonus) {
-        double initialAmount = getRepairAmountsSum(carId);
-        double discountByNumberRepairs = getDiscountByNumberRepairs(carId);
-        double discountByDay = getDiscountByDay(carId);
-        double discountByBonus = getDiscountByBonus(carId, selectedBonus);
-        double surchargeByKm = getSurchargeByKm(carId, km);
-        double surchargeByAge = getSurchargeByAge(carId);
-        double surchargeByDelay = getSurchargeByDelay(carId, realExitDate);
 
-        double finalAmount = initialAmount - discountByNumberRepairs - discountByDay - discountByBonus + surchargeByKm
+    public double getFinalAmountPrevious(Long carId, double km, Date realExitDate, Long selectedBonus) {
+        System.out.println(" 4444444444444444444444444444 ENTRÓ A LA FX DE getFinalAmountPrevious ");
+
+        double initialAmount = getRepairAmountsSum(carId);
+        System.out.println("44444444444444444444444444444444 initialAmount: " + initialAmount);
+
+        double discountByNumberRepairs = getDiscountByNumberRepairs(carId);
+        System.out.println("44444444444444444444444444444444 discountByNumberRepairs: " + discountByNumberRepairs);
+
+        double discountByDay = getDiscountByDay(carId);
+        System.out.println("44444444444444444444444444444444 discountByDay: " + discountByDay);
+
+        double discountByBonus = getDiscountByBonus(carId, selectedBonus);
+        System.out.println("44444444444444444444444444444444 discountByBonus: " + discountByBonus);
+
+        double surchargeByKm = getSurchargeByKm(carId, km);
+        System.out.println("44444444444444444444444444444444 surchargeByKm: " + surchargeByKm);
+
+        double surchargeByAge = getSurchargeByAge(carId);
+        System.out.println("44444444444444444444444444444444 surchargeByAge: " + surchargeByAge);
+
+        double surchargeByDelay = getSurchargeByDelay(carId, realExitDate);
+        System.out.println("44444444444444444444444444444444 surchargeByDelay: " + surchargeByDelay);
+
+        double finalAmount = initialAmount - discountByNumberRepairs - discountByDay
+                - discountByBonus + surchargeByKm
                 + surchargeByAge + surchargeByDelay;
+
+        System.out.println("4444444444444444444444444444444444444444444444444444444444444444444444 finalAmount: " + finalAmount);
         return finalAmount;
     }
 
     // Método que calcula el IVA
+
     public double getIva(Long carId, double km, Date realExitDate, Long selectedBonus) {
-        double finalAmount = getFinalAmountPrevious(carId, km, realExitDate, selectedBonus);
+        double finalAmount = getFinalAmountPrevious(carId, km, realExitDate,
+                selectedBonus);
         double iva = finalAmount * 0.19;
         return iva;
     }
 
     // Método que calcula el monto final
+
     public double getFinalAmount(Long carId, double km, Date realExitDate, Long selectedBonus) {
-        double finalAmount = getFinalAmountPrevious(carId, km, realExitDate, selectedBonus);
+        System.out.println("??????????????????????????????????????????????????????  ENTRÓ A LA FX DE getFinalAmount ");
+        System.out.println(" ????? carId: " + carId);
+        System.out.println(" ????? km: " + km);
+        System.out.println(" ????? realExitDate: " + realExitDate);
+        System.out.println(" ????? selectedBonus: " + selectedBonus);
+        double finalAmount = getFinalAmountPrevious(carId, km, realExitDate,selectedBonus);
+        System.out.println("????????????????????????????????????????????????????     finalAmount: " + finalAmount);
         double iva = getIva(carId, km, realExitDate, selectedBonus);
+        System.out.println("?????????????????????????????????????????????????    iva: " + iva);
         double finalAmountWithIva = finalAmount + iva;
+        System.out.println(" ????? finalAmountWithIva: " + finalAmountWithIva);
         return finalAmountWithIva;
     }
 
     // Método que verifica si un descuento es != 0, devuelve el nombre del descuento
+
     public List<String> getDiscountsNames(Long carId, Long selectedBonus) {
+        System.out.println(".................................................++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   ENTRÓ A LA FX DE getDiscountsNames ");
         double discountByNumberRepairs = getDiscountByNumberRepairs(carId);
+        System.out.println("+++++++++++++discountByNumberRepairs: " + discountByNumberRepairs);
         double discountByDay = getDiscountByDay(carId);
+        System.out.println("+++++++++++++discountByDay: " + discountByDay);
         double discountByBonus = getDiscountByBonus(carId, selectedBonus);
+        System.out.println("+++++++++++++discountByBonus: " + discountByBonus);
         // Crea lista vacía
         List<String> discountsNames = new ArrayList<>();
 
@@ -696,7 +732,8 @@ public class DetailService {
         return discountsNames;
     }
 
-    // Método que verifica si un descuento es != 0, devuelve el monto del descuento
+    // Método que verifica si un descuento es != 0, devuelve el monto del descuento*
+
     public List<Double> getDiscountsAmounts(Long carId, Long selectedBonus) {
         double discountByNumberRepairs = getDiscountByNumberRepairs(carId);
         double discountByDay = getDiscountByDay(carId);
@@ -757,23 +794,23 @@ public class DetailService {
         }
         return surchargesAmounts;
     }
- */
+
     // updateDetailByCarId
 
-    /*
-     * //función que convierte un string a Date
-     * public Date stringToDate(String date){
-     * SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-     * Date dateConverted = null;
-     * try {
-     * dateConverted = dateFormat.parse(date);
-     * } catch (ParseException e) {
-     * e.printStackTrace();
-     * }
-     * return dateConverted;
-     * }
-     */
-/* 
+    // función que convierte un string a Date
+    public Date stringToDate(String date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date dateConverted = null;
+        try {
+            dateConverted = dateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return dateConverted;
+    }
+
+    
+
     public DetailEntity updateDetailByCarId(Long carId, double km, String realExitDate, Long selectedBonus) {
         System.out.println(".................................................   ENTRÓ A LA FX DE UPDATE DETAIL ");
         System.out.println("carId: " + carId);
@@ -804,14 +841,13 @@ public class DetailService {
         List<Double> discountAmounts = getDiscountsAmounts(carId, selectedBonus);
         System.out.println("discountAmounts: " + discountAmounts);
 
-        List<String> surchargeNames = getSurchargesNames(carId, km, date, selectedBonus);
+        List<String> surchargeNames = getSurchargesNames(carId, km, date,
+                selectedBonus);
         System.out.println("surchargeNames: " + surchargeNames);
 
-        List<Double> surchargeAmounts = getSurchargesAmounts(carId, km, date, selectedBonus);
+        List<Double> surchargeAmounts = getSurchargesAmounts(carId, km, date,
+                selectedBonus);
         System.out.println("surchargeAmounts: " + surchargeAmounts);
-
-        int totalAmount = (int) getFinalAmount(carId, km, date, selectedBonus);
-        System.out.println("totalAmount: " + totalAmount);
 
         detailToUpdate.setRepairNames(repairNames);
         detailToUpdate.setRepairAmounts(repairAmounts);
@@ -819,10 +855,34 @@ public class DetailService {
         detailToUpdate.setDiscountAmounts(discountAmounts);
         detailToUpdate.setSurchargeNames(surchargeNames);
         detailToUpdate.setSurchargeAmounts(surchargeAmounts);
-        detailToUpdate.setTotalAmount(totalAmount);
 
         return updateDetail(detailToUpdate);
     }
 
+
+    public DetailEntity updateDetailByCarId2(Long carId, double km, String realExitDate, Long selectedBonus) {
+        System.out.println(".................................................   ENTRÓ A LA FX DE UPDATE DETAIL ");
+        System.out.println("carId: " + carId);
+
+        Date date = new Date();
+        // Convierte el string a Date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            date = dateFormat.parse(realExitDate);
+            System.out.println("Fecha en formato Date: " + date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        DetailEntity detailToUpdate = getDetailsByCarIdAndTotalAmountNull(carId);
+        System.out.println("------------detailToUpdate: " + detailToUpdate);
+
+
+        int totalAmount = (int) getFinalAmount(carId, km, date, selectedBonus);
+        System.out.println("totalAmount: " + totalAmount);
+
+        detailToUpdate.setTotalAmount(totalAmount);
+
+        return updateDetail(detailToUpdate);
+    }
 }
- */

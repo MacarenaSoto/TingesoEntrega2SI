@@ -6,18 +6,15 @@ import tingeso.carrepairservice.configurations.FeignClientConfig;
 
 import java.util.ArrayList;
 
-import tingeso.carrepairservice.requests.RequestCar;
+import tingeso.carrepairservice.requests.RequestBonus;
 
-
-@FeignClient(value = "car-service",
-        contextId = "CarsFeignClient",
-        path = "/api/v2/cars",
+@FeignClient(value = "repair-service",
+        contextId = "BonusFeignClient",
+        path = "/api/v2/bonus",
         configuration = FeignClientConfig.class)
-
-
-public interface CarsFeignClient {
+public interface BonusFeignClient {
 
     @GetMapping("/all")
-    ArrayList<RequestCar> car();
+    ArrayList<RequestBonus> bonus();
 
 }
