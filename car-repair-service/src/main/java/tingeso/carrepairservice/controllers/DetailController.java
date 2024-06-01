@@ -158,18 +158,4 @@ public class DetailController {
         return ResponseEntity.ok("fxGgtDiscountByNumberRepairs");
     }
 
-        
-
-  /*   //update a un detail específico según su carId
-    @PutMapping("/update/{carId}")
-    public ResponseEntity<DetailEntity> updateDetailByCarId(@PathVariable Long carId, @RequestBody DetailEntity detailEntity){
-        try {
-            DetailEntity detail = detailService.updateDetailByCarId(carId, detailEntity);
-            return ResponseEntity.ok(detail);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    } */
-
-
 }

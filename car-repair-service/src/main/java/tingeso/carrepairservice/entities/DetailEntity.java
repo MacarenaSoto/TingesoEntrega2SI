@@ -49,5 +49,7 @@ public class DetailEntity {
     private int totalAmount;
     private Date admissionDate;
     private LocalTime admissionHour;
+    private Date exitDate;
+    private Double iva;
 
 }

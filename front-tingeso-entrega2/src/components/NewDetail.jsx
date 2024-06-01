@@ -159,6 +159,14 @@ const NewDetail = () => {
         }
       );
 
+      const response4 = await axios.put(
+        `http://localhost:6081/api/v2/carrepairs/update/${id}`,
+        {
+          realExitDate: formattedRealExitDate,
+          realExitHour: formattedRealExitHour,
+        }
+      );
+
 
       /* const response2 = await axios.put(
         `http://localhost:6081/api/v2/carrepairs/update/${id}`,

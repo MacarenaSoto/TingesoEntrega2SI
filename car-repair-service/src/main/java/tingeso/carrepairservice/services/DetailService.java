@@ -35,19 +35,11 @@ public class DetailService {
     @Autowired
     DetailRepository detailRepository;
 
-    /*
-     * @Autowired
-     * RestTemplate restTemplate;
-     */
-
     @Autowired
     AppliedDiscountsService appliedDiscountsService;
 
     @Autowired
     AppliedSurchargeService appliedSurchargeService;
-
-    @Autowired
-    RepairService repairService;
 
     @Autowired
     CarsFeignClient carsFeignClient;
@@ -172,6 +164,19 @@ public class DetailService {
         return updateDetail(detailToUpdate);
     }
 
+    //getDetailIdByCarIdAndAdmissionDate
+    public DetailEntity getDetailIdByCarIdAndAdmissionDate(Long carId, Date admissionDate) {
+        // obtener todos los detalles de un auto:
+        List<DetailEntity> details = getDetailsByCarId(carId);
+        // recorrer los detalles y comparar la fecha de admisión:
+        for (DetailEntity detail : details) {
+            if (detail.getAdmissionDate().equals(admissionDate)) {
+                return detail;
+            }
+        }
+        return null;
+    }
+
     // -------------------------------------------------------------------------------------------------------------
     // MÉTODOS QUE CALCULAN DESCUENTOS Y RECARGOS:
 
@@ -194,12 +199,13 @@ public class DetailService {
                 }
             }
         }
-        System.out.println("initialAmount: " + initialAmount);
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE DE getInitialAmount con ---> initialAmount: " + initialAmount);
         return initialAmount;
     }
 
     // Recargo por kilometraje
     public double getSurchargeByKm(Long carId, double km) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getSurchargeByKm ");
         double surchargeByKm = 0;
         double initialAmount = getInitialAmount(carId);
         RequestCar car = getCarById(carId);
@@ -290,12 +296,14 @@ public class DetailService {
             }
         }
     }
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getSurchargeByKm con --> surchargeByKm: " + surchargeByKm);
         return surchargeByKm;
     }
 
     // Recargo por Antiguëdad del vehículo
     // Método que calcula el recargo por antigüedad del auto
     public double getSurchargeByAge(Long carId) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getSurchargeByAge ");
         double surchargeByAge = 0;
         double initialAmount = getInitialAmount(carId);
         RequestCar car = getCarById(carId);
@@ -375,6 +383,7 @@ public class DetailService {
                 surchargeByAge = initialAmount * 0.2;
             }
         }
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getSurchargeByAge con --> surchargeByAge: " + surchargeByAge);
         return surchargeByAge;
   }
 
@@ -383,13 +392,19 @@ public class DetailService {
     // un 5% por día de retraso
 
     public double getSurchargeByDelay(Long carId, Date realExitDate) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getSurchargeByDelay ");
         double surchargeByDelay = 0;
         double initialAmount = getInitialAmount(carId);
         // obtiene repair por carId y realExitDate = null
-        RepairEntity repair = repairService.getRepairsByCarIdAndRealExitDateIsNull(carId);
+        //RepairEntity repair = repairService.getRepairsByCarIdAndRealExitDateIsNull(carId);
   
         // obtener exitDate de repair
-        Date exitDate = repair.getExitDate();
+        //Date exitDate = repair.getExitDate();
+
+        //obtener el detalle por carId y totalAmount = null
+        DetailEntity detail = getDetailsByCarIdAndTotalAmountNull(carId);
+        //obtener la fecha exit 
+        Date exitDate = detail.getExitDate(); 
         System.out.println("exitDate: " + exitDate);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(exitDate);
@@ -409,13 +424,13 @@ public class DetailService {
         if (delay > 0) {
             surchargeByDelay = initialAmount * 0.05 * delay;
             }
-        System.out.println("surchargeByDelay: " + surchargeByDelay);
-  
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getSurchargeByDelay con --> surchargeByDelay: " + surchargeByDelay);
         return surchargeByDelay;
     }
 
     // Método que calcula el total de los recargos
     public double getTotalSurcharge(Long carId, double km, Date realExitDate) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getTotalSurcharge ");
         double surchargeByKm = getSurchargeByKm(carId, km);
         System.out.println("surchargeByKm: " + surchargeByKm);
         double surchargeByAge = getSurchargeByAge(carId);
@@ -423,7 +438,7 @@ public class DetailService {
         double surchargeByDelay = getSurchargeByDelay(carId, realExitDate);
         System.out.println("surchargeByDelay: " + surchargeByDelay);
         double totalSurcharge = surchargeByKm + surchargeByAge + surchargeByDelay;
-        System.out.println("totalSurcharge: " + totalSurcharge);
+        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getTotalSurcharge con --> totalSurcharge: " + totalSurcharge);
         return totalSurcharge;
     }
 
@@ -513,7 +528,7 @@ public class DetailService {
                 discountByNumberRepairs = initialAmount * 0.23;
             }
         }
-        System.out.println("discountByNumberRepairs: " + discountByNumberRepairs);
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getDiscountByNumberRepairs con --> discountByNumberRepairs: " + discountByNumberRepairs);
         return discountByNumberRepairs;
     }
 
@@ -521,6 +536,7 @@ public class DetailService {
     // Método que hace que un 10% de descuento si el auto ingresa un día Lunes o
     // Jueves entre 9:00 y 12:00
     public double getDiscountByDay(Long carId) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getDiscountByDay ");
         double discountByDay = 0;
         double initialAmount = getInitialAmount(carId);
         // obtiene el detail por carId y realExitDate = null
@@ -539,12 +555,14 @@ public class DetailService {
         if ((day == 2 || day == 5) && (hour >= 9 && hour <= 12)) {
             discountByDay = initialAmount * 0.1;
         }
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getDiscountByDay con --> discountByDay: " + discountByDay);
         return discountByDay;
     }
 
     // Descuento por bono
 
     public double getDiscountByBonus(Long carId, Long selectedBonus) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getDiscountByBonus ");
         double discountByBonus = 0;
         if (selectedBonus == 0) {
             return 0.0;
@@ -555,14 +573,16 @@ public class DetailService {
         List<RequestBonus> bonuses = getBonuses();
         for (RequestBonus bonus : bonuses) {
             if (bonus.getId() == selectedBonus) {
-                discountByBonus = initialAmount * bonus.getAmount();
+                discountByBonus = bonus.getAmount();
             }
         }
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getDiscountByBonus con --> discountByBonus: " + discountByBonus);
         return discountByBonus;
     }
 
     // Método que calcula el total de los descuentos
     public double getTotalDiscount(Long carId, Long selectedBonus) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getTotalDiscount ");
         double discountByNumberRepairs = getDiscountByNumberRepairs(carId);
         System.out.println("discountByNumberRepairs: " + discountByNumberRepairs);
         double discountByDay = getDiscountByDay(carId);
@@ -571,7 +591,7 @@ public class DetailService {
         System.out.println("discountByBonus: " + discountByBonus);
         double totalDiscount = discountByNumberRepairs + discountByDay +
                 discountByBonus;
-        System.out.println("totalDiscount: " + totalDiscount);
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getTotalDiscount con --> totalDiscount: " + totalDiscount);
         return totalDiscount;
     }
 
@@ -580,6 +600,7 @@ public class DetailService {
     // Método que buscar los montos de las reparaciones de un auto y las guarda en
     // un arreglo
     public List<Integer> getRepairAmounts(Long carId) {
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------Entra a la función getRepairAmounts ");
         DetailEntity detail = getDetailsByCarIdAndTotalAmountNull(carId);
         System.out.println("Detail: " + detail);
         List<Long> repairIds = detail.getRepairIds();
@@ -593,12 +614,12 @@ public class DetailService {
                 if (repairIds.get(i).equals(repairs.get(j).getId())) {
                     repairAmounts.add(repairs.get(j).getAmmount());
                 }
-                System.out.println("repairAmounts1: " + repairAmounts);
+                //System.out.println("repairAmounts1: " + repairAmounts);
             }
-            System.out.println("repairAmounts2: " + repairAmounts);
+            //System.out.println("repairAmounts2: " + repairAmounts);
         }
-        System.out.println("------------------------------------------------------------repairAmounts Final: " + repairAmounts);
-
+        //System.out.println("repairAmounts3: " + repairAmounts);
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getRepairAmounts con --> repairAmounts: " + repairAmounts);
         return repairAmounts;
 
     }
@@ -620,7 +641,7 @@ public class DetailService {
         for (int i = 0; i < repairAmounts.size(); i++) {
             repairAmountsSum += repairAmounts.get(i);
         }
-        System.out.println("repairAmountsSum: " + repairAmountsSum);
+        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ SALE de fx getRepairAmountsSum con --> repairAmountsSum: " + repairAmountsSum);
         return repairAmountsSum;
     }
 
@@ -662,7 +683,7 @@ public class DetailService {
                     }   
             }
         }
-        System.out.println("repairNames: " + repairNames);
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getRepairNames con --> repairNames: " + repairNames);
         return repairNames;
     }
 
@@ -696,7 +717,7 @@ public class DetailService {
                 - discountByBonus + surchargeByKm
                 + surchargeByAge + surchargeByDelay;
 
-        System.out.println("4444444444444444444444444444444444444444444444444444444444444444444444 finalAmount: " + finalAmount);
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getFinalAmountPrevious con --> finalAmount: " + finalAmount);
         return finalAmount;
     }
 
@@ -707,6 +728,7 @@ public class DetailService {
         double finalAmount = getFinalAmountPrevious(carId, km, realExitDate,
                 selectedBonus);
         double iva = finalAmount * 0.19;
+        System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getIva con --> iva: " + iva);
         return iva;
     }
 
@@ -723,7 +745,7 @@ public class DetailService {
         double iva = getIva(carId, km, realExitDate, selectedBonus);
         System.out.println("?????????????????????????????????????????????????    iva: " + iva);
         double finalAmountWithIva = finalAmount + iva;
-        System.out.println(" ????? finalAmountWithIva: " + finalAmountWithIva);
+        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- SALE de fx getFinalAmount con --> finalAmountWithIva: " + finalAmountWithIva);
         return finalAmountWithIva;
     }
 
@@ -756,6 +778,7 @@ public class DetailService {
     // Método que verifica si un descuento es != 0, devuelve el monto del descuento*
 
     public List<Double> getDiscountsAmounts(Long carId, Long selectedBonus) {
+        System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  ENTRÓ A LA FX DE getDiscountsAmounts ");
         double discountByNumberRepairs = getDiscountByNumberRepairs(carId);
         double discountByDay = getDiscountByDay(carId);
         double discountByBonus = getDiscountByBonus(carId, selectedBonus);
@@ -771,11 +794,13 @@ public class DetailService {
         if (discountByBonus != 0) {
             discountsAmounts.add(discountByBonus);
         }
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------, SALE DE LA FX DE getDiscountsAmounts con ---> discountsAmounts: " + discountsAmounts);
         return discountsAmounts;
     }
 
     // Método que verifica si un recargo es != 0, devuelve el nombre del recargo
     public List<String> getSurchargesNames(Long carId, double km, Date realExitDate, Long selectedBonus) {
+        System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  ENTRÓ A LA FX DE getSurchargesNames ");
         double surchargeByKm = getSurchargeByKm(carId, km);
         double surchargeByAge = getSurchargeByAge(carId);
         double surchargeByDelay = getSurchargeByDelay(carId, realExitDate);
@@ -792,11 +817,13 @@ public class DetailService {
         if (surchargeByDelay != 0) {
             surchargesNames.add("Recargo por retraso en la recogida");
         }
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------, SALE DE LA FX DE getSurchargesNames con ---> surchargesNames: " + surchargesNames);
         return surchargesNames;
     }
 
     // Método que verifica si un recargo es != 0, devuelve el monto del recargo
     public List<Double> getSurchargesAmounts(Long carId, double km, Date realExitDate, Long selectedBonus) {
+        System.out.println(" --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  ENTRÓ A LA FX DE getSurchargesAmounts ");
         double surchargeByKm = getSurchargeByKm(carId, km);
         double surchargeByAge = getSurchargeByAge(carId);
         double surchargeByDelay = getSurchargeByDelay(carId, realExitDate);
@@ -813,6 +840,7 @@ public class DetailService {
         if (surchargeByDelay != 0) {
             surchargesAmounts.add(surchargeByDelay);
         }
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------, SALE DE LA FX DE getSurchargesAmounts con ---> surchargesAmounts: " + surchargesAmounts);
         return surchargesAmounts;
     }
 
@@ -845,11 +873,12 @@ public class DetailService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        System.out.println("Aquí inicia el obtener los nombres y montos  de los descuentos y recargos 1 ");
 
         DetailEntity detailToUpdate = getDetailsByCarIdAndTotalAmountNull(carId);
         System.out.println("------------detailToUpdate: " + detailToUpdate);
 
-        System.out.println("Aquí inicia el obtener los nombres y montos  de los descuentos y recargos");
+        System.out.println("Aquí inicia el obtener los nombres y montos  de los descuentos y recargos 2 ");
         List<String> repairNames = getRepairNames(carId);
         System.out.println("repairNames: " + repairNames);
 
@@ -906,7 +935,11 @@ public class DetailService {
         int totalAmount = (int) getFinalAmount(carId, km, date, selectedBonus);
         System.out.println("totalAmount: " + totalAmount);
 
+        //sacar el iva 
+        double iva = getIva(carId, km, date, selectedBonus);
+
         detailToUpdate.setTotalAmount(totalAmount);
+        detailToUpdate.setIva(iva);
 
         return updateDetail(detailToUpdate);
     }

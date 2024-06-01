@@ -1,7 +1,9 @@
 package tingeso.carrepairservice.services;
 
+import tingeso.carrepairservice.entities.DetailEntity;
 import tingeso.carrepairservice.entities.RepairEntity;
 import tingeso.carrepairservice.repositories.RepairRepository;
+import tingeso.carrepairservice.requests.RequestCar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import tingeso.carrepairservice.clients.CarsFeignClient;
 
 
 
@@ -23,6 +28,13 @@ public class RepairService {
 
     @Autowired
     AppliedSurchargeService appliedSurchargeService;
+
+    @Autowired
+    CarsFeignClient carsFeignClient;
+
+    @Autowired
+    DetailService detailService;
+
 
     //métodos de repository
     public ArrayList<RepairEntity> getRepairs(){
@@ -81,23 +93,67 @@ public class RepairService {
         updateRepair(repair);
     }
 
+   /*  //getDetailIdByCarIdAndAdmissionDate:
+    public DetailEntity getDetailIdByCarIdAndAdmissionDate(Long carId, Date admissionDate){
+        //obtener todos los detalles de un auto:
+        List<DetailEntity> details = detailService.getDetailsByCarId(carId);
+        //recorrer los detalles y comparar la fecha de admisión:
+        for(DetailEntity detail : details){
+            if(detail.getAdmissionDate().equals(admissionDate)){
+                return detail;
+            }
+        }
+        return null;
+    } */
+
+
+    // Trae los autos del MS1
+    public ArrayList<RequestCar> getCars() {
+        ArrayList<RequestCar> cars = carsFeignClient.car();
+        System.out.println("cars: " + cars);
+        return cars;
+    }
+
+
+ 
+
+
+
     //updateRepairByCarId
     public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair ){
+        System.out.println("....................................................................ENTRÓ AL updateRepairByCarId");
         RepairEntity repairToUpdate = getRepairsByCarIdAndRealExitDateIsNull(carId);
+        System.out.println("....................................................................Se obtuvo la reparación con id: "+repairToUpdate.getId());
         repairToUpdate.setRealExitDate(repair.getRealExitDate());
         repairToUpdate.setRealExitHour(repair.getRealExitHour());
+        //obtener fecha de admisión la repairToUpdate:
+        Date dateAdmissionRepair = repairToUpdate.getAdmissionDate();
+
+        //buscar el detail que tenga = carId y admissionDate = dateAdmissionRepair:
+        DetailEntity detail = detailService.getDetailIdByCarIdAndAdmissionDate(carId, dateAdmissionRepair);
+        repairToUpdate.setDetailId(detail.getId());
+
+        List<Double> discountAmount = detail.getDiscountAmounts();
         
-        //actualiza el discountAmount que obtiene de appliedDiscounts
-        //repairToUpdate.setDiscountAmount(detailService.getTotalDiscount(carId,selectedBonus));
+        //Suma de los descuentos aplicados:
+        double totalDiscount = 0;
+        for(Double discount : discountAmount){
+            totalDiscount += discount;
+        }
+        repairToUpdate.setDiscountAmount(totalDiscount);
 
+        List<Double> surchargeAmount = detail.getSurchargeAmounts();
 
-        //actualiza el surchargeAmount que obtiene de appliedSurcharge
-        //repairToUpdate.setSurchargeAmount(detailService.getTotalSurcharge(carId, km, realExitDate));
+        //Suma de los recargos aplicados:
+        double totalSurcharge = 0;
+        for(Double surcharge : surchargeAmount){
+            totalSurcharge += surcharge;
+        }
+        repairToUpdate.setSurchargeAmount(totalSurcharge);
 
+        repairToUpdate.setFinalAmount(detail.getTotalAmount());
 
-        //actualiza el finalAmount
-        //repairToUpdate.setFinalAmount(detailService.getFinalAmount(carId, km, realExitDate, selectedBonus));
-
+        repairToUpdate.setIva(detail.getIva());
 
         //actualiza el iva
         //repairToUpdate.setIva(detailService.getIva(carId, km, realExitDate, selectedBonus));

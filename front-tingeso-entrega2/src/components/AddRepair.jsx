@@ -171,6 +171,8 @@ const AddRepair = () => {
           numberRepairs: numReparaciones,
           admissionDate: formattedAdmissionDate,
           admissionHour: formattedAdmissionHour,
+          exitDate: formattedExitDate,
+
         }
       );
 
