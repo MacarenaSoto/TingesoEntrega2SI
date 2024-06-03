@@ -1,7 +1,5 @@
 package tingeso.carrepairservice.services;
 
-import tingeso.carrepairservice.entities.DetailEntity;
-import tingeso.carrepairservice.entities.RepairEntity;
 import tingeso.carrepairservice.repositories.DetailRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,8 @@ import tingeso.carrepairservice.requests.RequestEngine;
 import tingeso.carrepairservice.requests.RequestType;
 import tingeso.carrepairservice.requests.RequestBonus;
 import tingeso.carrepairservice.requests.RequestRepair;
+
+import tingeso.carrepairservice.entities.*;
 
 @Service
 public class DetailService {
@@ -943,4 +943,11 @@ public class DetailService {
 
         return updateDetail(detailToUpdate);
     }
+
+
+    
+
 }
+
+
+    

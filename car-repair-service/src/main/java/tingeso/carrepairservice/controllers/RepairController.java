@@ -14,6 +14,8 @@ import java.util.Date;
 
 import tingeso.carrepairservice.entities.RepairEntity;
 import tingeso.carrepairservice.services.RepairService;
+import tingeso.carrepairservice.entities.CarList;
+import tingeso.carrepairservice.entities.CarListDetails;
 
 
 @RestController
@@ -112,6 +114,30 @@ public class RepairController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("carsList")
+    public ResponseEntity<List<CarList>> getCarsList() {
+        System.out.println("dentro del CONTROLLER de /carList, que usa el método getCarsList");
+        try {
+            List<CarList> carsList = repairService.getCarsList();
+            return ResponseEntity.ok(carsList);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("carsList/{id}")
+    public ResponseEntity<List<CarListDetails>> getCarListById(@PathVariable Long id) {
+        try {
+            List<CarListDetails> carListDetails = repairService.getCarsListDetails(id);
+            return ResponseEntity.ok(carListDetails);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    
 
     /*  @GetMapping("/test")
     public List<Repair> testRepairs() {

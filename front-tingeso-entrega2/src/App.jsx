@@ -20,6 +20,8 @@ import AddType from './components/AddType';
 import AddEngine from './components/AddEngine';
 import Report1 from './components/Report1';
 import Report2 from './components/Report2';
+import CarList from './components/CarList';
+import CarListDetail from './components/CarListDetail';
 
 
 function App() {
@@ -48,6 +50,10 @@ function App() {
               <Route path="/AddEngine" element={<AddEngine/>} />
               <Route path="/Report1" element={<Report1/>} />
               <Route path="/Report2" element={<Report2/>} />
+              <Route path="/CarList" element={<CarList/>} />
+              <Route path="/CarListDetail" element={<CarListDetail/>} />
+              <Route path="/" element={<CarList/>} />
+              <Route path="/CarListDetail/:carId" element={<CarListDetail/>} />
 
               
             </Routes>
