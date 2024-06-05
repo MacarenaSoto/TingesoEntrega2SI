@@ -22,42 +22,15 @@ public class Report1Controller {
     @Autowired
     CarRepairsFeignClient carRepairsFeignClient;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Report1Entity>> getAllReports1() {
-        try {
-            List<Report1Entity> reports1 = report1Service.getReports1();
-            return ResponseEntity.ok(reports1);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+  
 
-    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Report1Entity> getReport1ById(@PathVariable Long id) {
+    //getCarRepairs
+    @GetMapping("/carrepairs")
+    public ResponseEntity<?> getCarRepairs(){
+        System.out.println("Entró a CONTROLLER getCarRepairs");
         try {
-            Report1Entity report1 = report1Service.getReport1ById(id);
-            return ResponseEntity.ok(report1);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/add")
-    public ResponseEntity<Report1Entity> saveReport1(@RequestBody Report1Entity report1Entity){
-        try {
-            Report1Entity report1 = report1Service.saveReport1(report1Entity);
-            return ResponseEntity.ok(report1);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteReport1(@PathVariable Long id){
-        try {
-            report1Service.deleteReport1(id);
-            return ResponseEntity.ok("Report1 deleted");
+            return ResponseEntity.ok(report1Service.getCarRepairs());
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

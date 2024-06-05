@@ -1,4 +1,4 @@
-package tingeso.reports_service.repositories;
+/* package tingeso.reports_service.repositories;
 
 import tingeso.reports_service.entities.Report2Entity;
 
@@ -16,3 +16,4 @@ public interface Report2Repository extends JpaRepository<Report2Entity, Long>{
     Report2Entity findByRepairId(Long repairId);
 
 }
+ */
