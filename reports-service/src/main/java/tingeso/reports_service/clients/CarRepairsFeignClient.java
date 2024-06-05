@@ -18,5 +18,8 @@ public interface  CarRepairsFeignClient {
         @GetMapping("/all")
         ArrayList<RequestCarRepairs> carRepairs();
 
+        @GetMapping("/carsByType/{typeId}")
+        ArrayList<RequestCarRepairs> carRepairsByType(Long type);
+
 
 }

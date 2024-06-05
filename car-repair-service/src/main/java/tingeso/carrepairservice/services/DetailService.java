@@ -105,6 +105,23 @@ public class DetailService {
         return cars;
     }
 
+    //Trae los autos del MS1 según su type
+    public ArrayList<RequestCar> getCarsByType(Long type){
+        System.out.println("Entra a getCarsByType en DETAILSERVICE");
+        ArrayList<RequestCar> cars = carsFeignClient.car();
+        System.out.println("cars: " + cars);
+        ArrayList<RequestCar> carsByType = new ArrayList<>();
+        for(RequestCar car : cars){
+            System.out.println("car.getTypeId(): " + car.getTypeId());
+            System.out.println("type: " + type);
+            if(car.getTypeId().equals(type)){
+                carsByType.add(car);
+            }
+        }
+        System.out.println("carsByType: " + carsByType);
+        return carsByType;
+    }
+
     // Trae las marcas del MS1
     public ArrayList<RequestBrand> getBrands() {
         ArrayList<RequestBrand> brands = brandsFeignClient.brand();

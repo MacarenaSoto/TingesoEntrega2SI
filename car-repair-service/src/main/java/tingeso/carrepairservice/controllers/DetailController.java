@@ -108,7 +108,19 @@ public class DetailController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-    } 
+    }
+    
+    //getCarsByType
+    @GetMapping("/carsByType/{typeId}")
+    public ResponseEntity<List<RequestCar>> getCarsByType(@PathVariable Long typeId){
+        try {
+            System.out.println("Entró a CONTROLLER getCarsByType");
+            List<RequestCar> cars = detailService.getCarsByType(typeId);
+            return ResponseEntity.ok(cars);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping("/probando")
     public ResponseEntity<String> probando(){

@@ -36,4 +36,15 @@ public class Report1Controller {
         }
     }
 
+    //getCarRepairsByType
+    @GetMapping("/carrepairs/{type}")
+    public ResponseEntity<?> getCarRepairsByType(@PathVariable Long type){
+        System.out.println("Entró a CONTROLLER getCarRepairsByType");
+        try {
+            return ResponseEntity.ok(report1Service.getCarRepairsByType(type));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

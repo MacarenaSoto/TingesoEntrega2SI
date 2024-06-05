@@ -23,6 +23,13 @@ public class Report1Service {
         ArrayList<RequestCarRepairs> carRepairs = carRepairsFeignClient.carRepairs();
         return carRepairs;
     }
+
+    //Trae las repairs del MS car-repair-service por type con getCarRepairsByType
+    public ArrayList<RequestCarRepairs> getCarRepairsByType(Long type){
+        System.out.println("Entró a SERVICE getCarRepairsByType");
+        ArrayList<RequestCarRepairs> carRepairs = carRepairsFeignClient.carRepairsByType(type);
+        return carRepairs;
+    }
 /* 
     //Trae las repairs del MS car-repair-service por type
     public ArrayList<RequestCarRepairs> getCarRepairsByType(Long type){
