@@ -5,15 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import tingeso.carservice.entities.TypeEntity;
 import tingeso.carservice.services.TypeService;
 
 @RestController
 @RequestMapping("/api/v2/types")
-@CrossOrigin(origins = "*")
+//@CrossOrigin("*")
 public class TypeController {
 
     @Autowired

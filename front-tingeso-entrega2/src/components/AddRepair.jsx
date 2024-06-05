@@ -21,8 +21,10 @@ const AddRepair = () => {
   const [exitDate, setExitDate] = useState(null);
   const [exitHour, setExitHour] = useState("");
   const [engineId, setEngineId] = useState(null);
+  const [id, setCarId] = useState(null);
   const [numReparaciones, setNumReparaciones] = useState(1);
   const [reparaciones, setReparaciones] = useState([]);
+  const [numberRepairs , setNumberRepairs] = useState(1);
 
   // Función para obtener el engineId basado en la patente
   const fetchEngineId = async (patent) => {
@@ -36,9 +38,17 @@ const AddRepair = () => {
       // Obtener el engineId del objeto del automóvil
       const engineId = carResponse.data.engineId;
       console.log("Este es el EngineId:", engineId);
+      
+
+      const carId = carResponse.data.id;
+      console.log("Este es el CarId:", carId);
       // Actualizar el estado con el engineId obtenido
       setEngineId(engineId);
       console.log("EngineId set successfully:", engineId);
+
+      // Actualizar el estado con el carId obtenido
+      setCarId(carId);
+      console.log("CarId set successfully:", carId);
     } catch (error) {
       console.error("Error fetching engineId:", error);
     }
@@ -138,7 +148,7 @@ const AddRepair = () => {
       const formattedExitHour = exitHour ? exitHour : null;
 
       const response = await axios.post(
-        "http://localhost:8090/api/v1/repairs/add",
+        "http://localhost:6081/api/v2/carrepairs/add",
         {
           patent: patent,
           admissionDate: formattedAdmissionDate,
@@ -146,10 +156,29 @@ const AddRepair = () => {
           repairType: repairOptions,
           exitDate: formattedExitDate,
           exitHour: formattedExitHour,
+          numberRepairs: numReparaciones,
+          carId: id,
         }
       );
 
-      console.log("Respuesta del backend:", response.data);
+      console.log("Respuesta del backend para carrepair:", response.data);
+
+      const response2 = await axios.post(
+        "http://localhost:6081/api/v2/details/add",
+        {
+          carId: id,
+          repairIds: reparaciones,
+          numberRepairs: numReparaciones,
+          admissionDate: formattedAdmissionDate,
+          admissionHour: formattedAdmissionHour,
+          exitDate: formattedExitDate,
+
+        }
+      );
+
+      console.log("Respuesta del backend para details:", response2.data);
+
+     
 
       // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
     } catch (error) {

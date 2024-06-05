@@ -32,7 +32,7 @@ public class DetailEntity {
     private List<String> repairNames;
 
     //Lista con los amount de las reparaciones
-    private List<Double> repairAmounts;
+    private List<Integer> repairAmounts;
 
     //Lista con los nombres de los descuentos
     private List<String> discountNames;
@@ -49,5 +49,7 @@ public class DetailEntity {
     private int totalAmount;
     private Date admissionDate;
     private LocalTime admissionHour;
+    private Date exitDate;
+    private Double iva;
 
 }
