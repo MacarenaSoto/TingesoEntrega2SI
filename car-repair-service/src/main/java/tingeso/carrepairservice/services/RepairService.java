@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -222,8 +224,23 @@ public class RepairService {
         return carsList;
     }
 
-    public List<CarListDetails> getCarsListDetails(Long carId) {
+    public static Date convertToDate(String dateString) {
+        // Parse the string to an OffsetDateTime
+        OffsetDateTime odt = OffsetDateTime.parse(dateString, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        // Convert to an instant and then to a Date
+        return Date.from(odt.toInstant());
+    }
+
+
+
+    public List<CarListDetails> getCarsListDetails(Long carId, String admissionDate) {
         System.out.println("Entró a getCarsListDetails");
+
+        Date admissionDateModified = convertToDate(admissionDate);
+
+
+
+
         List<RequestCar> cars = getCars();
         RequestCar car2 = null;
     
@@ -250,6 +267,13 @@ public class RepairService {
         System.out.println("ESTAS SON LAS details: " + details);
     
         for (DetailEntity detail : details) {
+
+            System.out.println("detail.getAdmissionDate().toInstant(): " + detail.getAdmissionDate().toInstant());
+            System.out.println("admissionDateModified.toInstant(): " + admissionDateModified.toInstant());
+
+            
+
+
             Long detailId = detail.getId();
             System.out.println("Entra al PRIMER FOR : " );
             System.out.println("detail: " + detail);
@@ -258,6 +282,9 @@ public class RepairService {
                 System.out.println("repair: " + repair);
                 System.out.println("repair.getDetailId(): " + repair.getDetailId());
                 System.out.println("detail.getId(): " + detail.getId());
+                if (!detail.getAdmissionDate().toInstant().equals(admissionDateModified.toInstant())) {
+                    continue;
+                }
                 if (repair.getDetailId() != null && repair.getDetailId().equals(detail.getId())) {
                     System.out.println("Entra al IF : " );
 
@@ -288,6 +315,8 @@ public class RepairService {
         }
         return carsListDetailsAA;
     }
+
+    //obtiene los repairs según un typeCar
     
 
 }

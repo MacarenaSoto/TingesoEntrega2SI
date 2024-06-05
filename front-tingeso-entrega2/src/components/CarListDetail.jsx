@@ -2,20 +2,21 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../styles/R1.css'; // Importa el archivo de estilos CSS
 import { useParams } from 'react-router-dom';
+import moment from 'moment';
 
 const CarListDetail = () => {
   const [data, setData] = useState([]);
-  const {carId} = useParams();
+  const {carId, admissionDate} = useParams();
 
   useEffect(() => {
     console.log('useEffect se está ejecutando');
     fetchData();
-  }, [carId]);
+  }, [carId, admissionDate]);
 
   const fetchData = async () => {
     console.log('fetchData se está ejecutando');
     try {
-      const response = await axios.get( `http://localhost:6081/api/v2/carrepairs/carsList/${carId} `);
+      const response = await axios.get( `http://localhost:6081/api/v2/carrepairs/carsList/${carId}/${admissionDate} `);
       console.log('aaaaaaaaaaaaaaaaaaaaaa'); // Log the fetched data for debugging
       console.log('Fetched data:', response.data); // Log the fetched data for debugging
       setData(response.data);
@@ -60,9 +61,9 @@ const CarListDetail = () => {
             <tr key={index}>
             <td>{item.id}</td>
             <td>{item.patent}</td>
-             <td>{new Date(item.admissionDate).toLocaleDateString()}</td>
-            <td>{new Date(item.exitDate).toLocaleDateString()}</td>
-            <td>{item.realExitDate ? new Date(item.realExitDate).toLocaleDateString() : 'N/A'}</td>
+            <td>{moment.utc(item.admissionDate).format('DD/MM/YYYY')}</td>
+              <td>{moment.utc(item.exitDate).format('DD/MM/YYYY')}</td>
+              <td>{item.realExitDate ? moment.utc(item.realExitDate).local().format('DD/MM/YYYY') : 'N/A'}</td>
             <td>
               <ul>
                 {item.repairs.map((repair, i) => (

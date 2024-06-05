@@ -34,8 +34,18 @@ const CarList = () => {
     }
   };
 
-  const handleDetail = (id) => {
-    navigate(`/carListDetail/${id}`);
+  const handleDetail = (id,admissionDate) => {
+    navigate(`/carListDetail/${id}/${admissionDate}`);
+    };
+
+    const handleDetailClick = (id, admissionDate) => {
+      console.log('ID:', id);
+      //console.log del tipo de dato de id
+      console.log(typeof id);
+      console.log('Admission Date:', admissionDate);
+      //console.log del tipo de dato de admissionDate
+      console.log(typeof admissionDate);
+      handleDetail(id, admissionDate);
     };
 
 
@@ -79,7 +89,7 @@ const CarList = () => {
               <td>{item.totalAmounts}</td>
               <td>{getStatus(item.detailId, item.exitDate)}</td>
               <td>
-                    <button onClick = {() => handleDetail(item.id)}>Ver Detalle</button>
+                    <button onClick = {() => handleDetailClick(item.id, item.admissionDate)}>Ver Detalle</button>
               </td>
             </tr>
           ))}

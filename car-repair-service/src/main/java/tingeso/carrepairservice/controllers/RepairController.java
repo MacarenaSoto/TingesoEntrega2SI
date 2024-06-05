@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import jakarta.ws.rs.Path;
+
 import java.util.List;
 import java.util.Collections;
 import java.util.Date;
@@ -126,10 +128,10 @@ public class RepairController {
         }
     }
 
-    @GetMapping("carsList/{id}")
-    public ResponseEntity<List<CarListDetails>> getCarListById(@PathVariable Long id) {
+    @GetMapping("carsList/{id}/{admissionDate}")
+    public ResponseEntity<List<CarListDetails>> getCarListById(@PathVariable Long id ,@PathVariable String admissionDate) {
         try {
-            List<CarListDetails> carListDetails = repairService.getCarsListDetails(id);
+            List<CarListDetails> carListDetails = repairService.getCarsListDetails(id, admissionDate);
             return ResponseEntity.ok(carListDetails);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
