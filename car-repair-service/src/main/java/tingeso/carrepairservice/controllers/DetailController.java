@@ -15,6 +15,8 @@ import tingeso.carrepairservice.services.DetailService;
 import tingeso.carrepairservice.clients.CarsFeignClient;
 import tingeso.carrepairservice.requests.RequestBrand;
 import tingeso.carrepairservice.requests.RequestCar;
+import tingeso.carrepairservice.requests.RequestRepair;
+import tingeso.carrepairservice.requests.RequestType;
 import tingeso.carrepairservice.clients.BrandsFeignClient;
 import tingeso.carrepairservice.clients.TypesFeignClient;
 
@@ -169,5 +171,33 @@ public class DetailController {
         detailService.getDiscountByNumberRepairs(carId);
         return ResponseEntity.ok("fxGgtDiscountByNumberRepairs");
     }
+
+
+    //getTypes
+    @GetMapping("/types")
+    public ResponseEntity<List<RequestType>> getTypes(){
+        try {
+            System.out.println("Entró a CONTROLLER getTypes");
+            List<RequestType> types = detailService.getTypes();
+            return ResponseEntity.ok(types);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //getRepairs
+
+    @GetMapping("/repairs")
+    public ResponseEntity<List<RequestRepair>> getRepairs(){
+        try {
+            System.out.println("Entró a CONTROLLER getRepairs");
+            List<RequestRepair> repairs = detailService.getRepairs();
+            return ResponseEntity.ok(repairs);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
 }

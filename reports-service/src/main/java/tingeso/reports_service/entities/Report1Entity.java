@@ -15,12 +15,20 @@ public class Report1Entity {
 
     private Long id;
 
-    private List<String> repairs;
+    /* private List<String> repairs;
     private List<Long> repairIds;
     private List<String> carType;
     private List<Long> typesIds;
     private List<Integer> nCarsByRepairs;
-    private List<Double> totalAmountsByRepairs;
+    private List<Double> totalAmountsByRepairs; */
+
+
+    private String carType; 
+    private Long typeId;
+    private String repairName;
+    private Long repairId;
+    private Integer nRepairedCars;
+    private Double amountRepairedCars;
 
 
 

@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import tingeso.reports_service.Config.FeignClientConfig;
 import tingeso.reports_service.request.RequestCar;
+import tingeso.reports_service.request.RequestDetail;
 
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -20,6 +21,9 @@ public interface DetailsFeignClient {
 
 
     @GetMapping("/carsByType/{typeId}")
-        ArrayList<RequestCar> carRepairsByType( @PathVariable ("typeId") Long typeId);
+        ArrayList<RequestCar> carsByType( @PathVariable ("typeId") Long typeId);
+
+    @GetMapping("/all")
+        ArrayList<RequestDetail> details();
 
 }
