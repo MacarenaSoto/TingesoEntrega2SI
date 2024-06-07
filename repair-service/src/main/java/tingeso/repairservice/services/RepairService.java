@@ -42,6 +42,28 @@ public class RepairService {
         }
     }
 
+    //obtiene los nombres de las reparaciones
+    public ArrayList<String> getRepairsNames(){
+        System.out.println("Entró a getRepairsNames");
+        ArrayList<String> names = new ArrayList<>();
+        for (RepairEntity repair : repairRepository.findAll()){
+            names.add(repair.getName());
+        }
+        return names;
+    }
+
+    //elimina los nombres repetidos de las reparaciones
+    public ArrayList<String> getRepairsNamesNoRepeat(){
+        System.out.println("Entró a getRepairsNamesNoRepeat");
+        ArrayList<String> names = new ArrayList<>();
+        for (RepairEntity repair : repairRepository.findAll()){
+            if (!names.contains(repair.getName())){
+                names.add(repair.getName());
+            }
+        }
+        return names;
+    }
+
     
 
 }

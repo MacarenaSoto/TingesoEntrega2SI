@@ -7,6 +7,11 @@ const Report1 = () => {
   const [brands, setBrands] = useState([]); // Agrega un estado para almacenar las marcas [1]
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
+  const [processedData, setProcessedData] = useState({ repairTypes: [], carTypes: [], organizedData: [] });
+  const [carTypes, setCarTypes] = useState([]);
+  const [carTypesIds, setCarTypesIds] = useState([]);
+  const [repairNames, setRepairNames] = useState([]);
+  const [summaryData, setSummaryData] = useState([]);
 
   // Manejar el cambio en la selección del mes
   const handleMonthChange = (e) => {
@@ -33,23 +38,99 @@ const Report1 = () => {
     { value: "11", label: "Noviembre" },
     { value: "12", label: "Diciembre" },
   ];
-  
-  const fetchData = async () => {
+
+  const fetchCarTypes = async () => {
     try {
-      const response = await axios.get('http://localhost:8090/api/v1/details/report1vPrueba');
-      setData(response.data);
+      const response = await axios.get('http://localhost:6081/api/v2/types/names');
+      console.log('Car types:', response.data);
+      setCarTypes(response.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching car types:', error);
     }
   };
 
+  const fetchRepairNames = async () => {
+    try {
+      const response = await axios.get('http://localhost:6081/api/v2/repairs/namesNoRepeat');
+      console.log('Repair names:', response.data);
+      setRepairNames(response.data);
+    } catch (error) {
+      console.error('Error fetching repair names:', error);
+    }
+  };
+
+  const fetchCarTypesIds = async () => {
+    try {
+      const response = await axios.get('http://localhost:6081/api/v2/types/ids');
+      console.log('Car types ids:', response.data);
+      setCarTypesIds(response.data);
+    } catch (error) {
+      console.error('Error fetching car types ids:', error);
+    }
+  }
+
+  
+  
+  const fetchData = async () => {
+    try {
+      const carTypesString = carTypes.join(',');
+      const repairNamesString = repairNames.join(',');
+      const response = await axios.get(`http://localhost:6081/api/v2/reports1/filterReports?carTypes=${carTypesString}&repairNames=${repairNamesString}`);
+      setData(response.data);
+      const processed = processData(response.data);
+      setProcessedData(processed);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }; 
+
+  const fetchSummaryData = async () => {
+    try {
+      const repairNamesString = repairNames.join(',');
+      const response = await axios.get(`http://localhost:6081/api/v2/reports1/summarizeRepairs?typeIds=${carTypesIds}&repairNames=${repairNamesString}`);
+      console.log('Summary data:', response.data);
+      setSummaryData(response.data);
+    } catch (error) {
+      console.error('Error fetching summary data:', error);
+    }
+  };
+  
+
+  
+  
+
   useEffect(() => {
-    axios.get('http://localhost:8081/api/v2/brands/all') // Realiza una petición para obtener las marcas [2]
-        .then((response) => {
-            setBrands(response.data);
-            })
-    fetchData();
+    fetchCarTypes();
+    fetchRepairNames();
+    fetchCarTypesIds();
+    fetchSummaryData();
   }, []);
+
+  useEffect(() => {
+    if (carTypes.length > 0 && repairNames.length > 0) {
+      fetchData();
+    }
+  }, [carTypes, repairNames]);
+
+  const processData = (data) => {
+    const repairTypes = [...new Set(data.map(item => item.repairName))]; // Tipos de reparación únicos
+    const carTypes = [...new Set(data.map(item => item.carType))]; // Tipos de coche únicos
+
+    // Crear un objeto para almacenar los datos organizados
+    const organizedData = repairTypes.map(repair => {
+      const repairRow = { repairName: repair, nRepairedCars: {}, amountRepairedCars: {} };
+
+      carTypes.forEach(car => {
+        const matchingItem = data.find(item => item.repairName === repair && item.carType === car);
+        repairRow.nRepairedCars[car] = matchingItem ? matchingItem.nrepairedCars : 0;
+        repairRow.amountRepairedCars[car] = matchingItem ? matchingItem.amountRepairedCars : 0;
+      });
+
+      return repairRow;
+    });
+
+    return { repairTypes, carTypes, organizedData };
+  };
 
   return (
     <div>
@@ -80,29 +161,34 @@ const Report1 = () => {
         <thead>
           <tr>
             <th>Lista de Reparaciones</th>
-            {brands.map((brands, index) => (
-            <th key={index}>{brands.name}</th>
-          ))}
+            {processedData.carTypes.map((carType, index) => (
+                <th key={index}>{carType}</th>
+              ))}
             <th>Total </th>
 
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td>{item.patent}</td>
-              <td>{item.initialAmount}</td>
-              <td>{item.discountByRepair}</td>
-              <td>{item.discountByDay}</td>
-              <td>{item.discountByBonus}</td>
-              <td>{item.surchargeByKm}</td>
-              <td>{item.surchargeByDelay}</td>
-              <td>{item.surchargeByAge}</td>
-              <td>{item.finalAmount}</td>
-              <td>{item.date}</td>
-            </tr>
-          ))}
-        </tbody>
+            {processedData.organizedData.map((row, index) => (
+              <>
+                <tr key={index}>
+                  <td>{row.repairName}</td>
+                  {processedData.carTypes.map((carType, idx) => (
+                    <td key={idx}>{row.nRepairedCars[carType]}</td>
+                  ))}
+                  <td>
+                    {summaryData.find(summary => summary.repairName === row.repairName)?.totalRepairedCars || 0}
+                  </td>
+                </tr>
+                <tr key={`${index}-amount`}>
+                  <td></td>
+                  {processedData.carTypes.map((carType, idx) => (
+                    <td key={idx}>{row.amountRepairedCars[carType]}</td>
+                  ))}
+                </tr>
+              </>
+            ))}
+          </tbody>
       </table>
     </div>
     </div>

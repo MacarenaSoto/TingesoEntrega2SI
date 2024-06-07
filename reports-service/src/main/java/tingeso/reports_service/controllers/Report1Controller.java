@@ -9,8 +9,11 @@ import tingeso.reports_service.services.Report1Service;
 import tingeso.reports_service.request.RequestType;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import tingeso.reports_service.clients.CarRepairsFeignClient;
+import tingeso.reports_service.entities.Report1Entity;
 
 @RestController
 
@@ -84,6 +87,7 @@ public class Report1Controller {
 
     //------------------------------------------------------------------------
 
+    //LISTO
     //getDetailsByCarType
     @GetMapping("/details/{type}")
     public ResponseEntity<?> getDetailsByCarType(@PathVariable Long type){
@@ -116,29 +120,34 @@ public class Report1Controller {
             return ResponseEntity.notFound().build();
         }
     }
-
+    //LISTO
     //getTypeName
-    @GetMapping("/typename/{types}")
-    public ResponseEntity<?> getTypeName(@PathVariable ArrayList<RequestType> types ){
+    @GetMapping("/typename")
+    public ResponseEntity<?> getTypeName(@RequestParam List<Long> typesIds){
         System.out.println("Entró a CONTROLLER getTypeName");
         try {
+            ArrayList<RequestType> types = report1Service.getTypesByIds(typesIds); // Necesitas implementar este método
             return ResponseEntity.ok(report1Service.getTypeName(types));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
+    
+    //LISTO
     //getTypeId
-    @GetMapping("/typeid/{types}")
-    public ResponseEntity<?> getTypeId(@PathVariable ArrayList<RequestType> types ){
+    @GetMapping("/typeid")
+    public ResponseEntity<?> getTypeId(@RequestParam List<Long> typeIds ){
         System.out.println("Entró a CONTROLLER getTypeId");
         try {
+            ArrayList<RequestType> types = report1Service.getTypesByIds(typeIds);
             return ResponseEntity.ok(report1Service.getTypeId(types));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
+    //LISTO
     //getTypeNameById
     @GetMapping("/typenamebyid/{typeId}")
     public ResponseEntity<?> getTypeNameById(@PathVariable Long typeId ){
@@ -150,6 +159,7 @@ public class Report1Controller {
         }
     }
 
+    //LISTO
     //getRepairNames
     @GetMapping("/repairnames")
     public ResponseEntity<?> getRepairNames(){
@@ -171,6 +181,30 @@ public class Report1Controller {
             return ResponseEntity.notFound().build();
         }
     }
+
+    //filterReports
+    @GetMapping("/filterReports")
+    public ResponseEntity<List<Report1Entity>> filterReports(
+            @RequestParam List<String> carTypes, 
+            @RequestParam List<String> repairNames) {
+        List<Report1Entity> filteredReports = report1Service.filterReports(carTypes, repairNames);
+        return ResponseEntity.ok(filteredReports);
+    }
+
+    //summarizeRepairs
+    @GetMapping("/summarizeRepairs")
+    public ResponseEntity<List<Map<String, Object>>> summarizeReports(
+            @RequestParam List<Long> typeIds,
+            @RequestParam List<String> repairNames) {
+        // Asume que tienes un método para obtener los reportes filtrados
+        List<Report1Entity> reports = report1Service.getFilteredReports(typeIds, repairNames);
+        List<Map<String, Object>> summary = report1Service.summarizeRepairs(reports);
+        return ResponseEntity.ok(summary);
+    }
+    
+
+
+
 
 
 
