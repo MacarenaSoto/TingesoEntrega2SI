@@ -191,16 +191,33 @@ public class Report1Controller {
         return ResponseEntity.ok(filteredReports);
     }
 
-    //summarizeRepairs
-    @GetMapping("/summarizeRepairs")
-    public ResponseEntity<List<Map<String, Object>>> summarizeReports(
-            @RequestParam List<Long> typeIds,
-            @RequestParam List<String> repairNames) {
-        // Asume que tienes un método para obtener los reportes filtrados
-        List<Report1Entity> reports = report1Service.getFilteredReports(typeIds, repairNames);
-        List<Map<String, Object>> summary = report1Service.summarizeRepairs(reports);
-        return ResponseEntity.ok(summary);
+    //filterReports
+    @GetMapping("/filterReportsByDate")
+    public ResponseEntity<List<Report1Entity>> filterReportsByDate(
+            @RequestParam List<String> carTypes, 
+            @RequestParam List<String> repairNames,
+            @RequestParam String month,
+            @RequestParam String year) {
+        System.out.println("Entró a CONTROLLER filterReportsByDate");
+        List<Report1Entity> filteredReports = report1Service.filterReports2(carTypes, repairNames, month, year);
+        return ResponseEntity.ok(filteredReports);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 
 

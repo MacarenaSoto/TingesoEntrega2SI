@@ -12,6 +12,7 @@ const Report1 = () => {
   const [carTypesIds, setCarTypesIds] = useState([]);
   const [repairNames, setRepairNames] = useState([]);
   const [summaryData, setSummaryData] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(""); // Estado para manejar el mensaje de error
 
   // Manejar el cambio en la selección del mes
   const handleMonthChange = (e) => {
@@ -69,13 +70,31 @@ const Report1 = () => {
     }
   }
 
+  const fetchDataPrevious = async () => {
+    try{
+      const carTypesString = carTypes.join(',');
+      const repairNamesString = repairNames.join(',');
+      const response = await axios.get (`http://localhost:6081/api/v2/reports1/filterReports?carTypes=${carTypesString}&repairNames=${repairNamesString}`);
+      setData(response.data);
+      const processed = processData(response.data);
+      setProcessedData(processed);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   
   
   const fetchData = async () => {
     try {
       const carTypesString = carTypes.join(',');
       const repairNamesString = repairNames.join(',');
-      const response = await axios.get(`http://localhost:6081/api/v2/reports1/filterReports?carTypes=${carTypesString}&repairNames=${repairNamesString}`);
+      const response = await axios.get(`http://localhost:6081/api/v2/reports1/filterReportsByDate?carTypes=${carTypesString}&repairNames=${repairNamesString}&month=${selectedMonth}&year=${selectedYear}`);
+      if (response.data.length === 0) {
+        setErrorMessage("No se encontraron datos para el mes y año seleccionados.");
+      }else{
+        setErrorMessage("");
+      }
       setData(response.data);
       const processed = processData(response.data);
       setProcessedData(processed);
@@ -103,14 +122,14 @@ const Report1 = () => {
     fetchCarTypes();
     fetchRepairNames();
     fetchCarTypesIds();
-    fetchSummaryData();
+    //fetchSummaryData();
   }, []);
 
   useEffect(() => {
-    if (carTypes.length > 0 && repairNames.length > 0) {
-      fetchData();
+    if (carTypes.length > 0 && repairNames.length > 0 && !selectedMonth && !selectedYear) {
+      fetchDataPrevious();
     }
-  }, [carTypes, repairNames]);
+  }, [carTypes, repairNames, selectedMonth, selectedYear]);
 
   const processData = (data) => {
     const repairTypes = [...new Set(data.map(item => item.repairName))]; // Tipos de reparación únicos
@@ -118,18 +137,30 @@ const Report1 = () => {
 
     // Crear un objeto para almacenar los datos organizados
     const organizedData = repairTypes.map(repair => {
-      const repairRow = { repairName: repair, nRepairedCars: {}, amountRepairedCars: {} };
+      const repairRow = { repairName: repair, nRepairedCars: {}, amountRepairedCars: {}, totalRepairedCars: 0, totalAmountRepairedCars: 0 };
 
       carTypes.forEach(car => {
         const matchingItem = data.find(item => item.repairName === repair && item.carType === car);
-        repairRow.nRepairedCars[car] = matchingItem ? matchingItem.nrepairedCars : 0;
-        repairRow.amountRepairedCars[car] = matchingItem ? matchingItem.amountRepairedCars : 0;
+        const nRepairedCars = matchingItem ? matchingItem.nrepairedCars : 0;
+        const amountRepairedCars = matchingItem ? matchingItem.amountRepairedCars : 0;
+        repairRow.nRepairedCars[car] = nRepairedCars;
+        repairRow.amountRepairedCars[car] = amountRepairedCars;
+        repairRow.totalRepairedCars += nRepairedCars;
+        repairRow.totalAmountRepairedCars += amountRepairedCars;
       });
 
       return repairRow;
     });
 
     return { repairTypes, carTypes, organizedData };
+  };
+
+  const handleSubmit = () => {
+    if (selectedMonth && selectedYear) {
+      fetchData();
+    } else {
+      console.log("Por favor seleccione un mes y un año.");
+    }
   };
 
   return (
@@ -155,6 +186,9 @@ const Report1 = () => {
           placeholder="Escribe un año (ej. 2022)"
         />
       </div>
+
+      <button onClick={handleSubmit}>Buscar</button>
+      {errorMessage && <p>{errorMessage}</p>}
     <div className="tabla-container"> {/* Agrega una clase contenedora para aplicar estilos */}
       <h2>Reporte 1: Listado de reparaciones</h2>
       <table className="tabla-r1"> {/* Agrega una clase a la tabla para aplicar estilos */}
@@ -176,15 +210,14 @@ const Report1 = () => {
                   {processedData.carTypes.map((carType, idx) => (
                     <td key={idx}>{row.nRepairedCars[carType]}</td>
                   ))}
-                  <td>
-                    {summaryData.find(summary => summary.repairName === row.repairName)?.totalRepairedCars || 0}
-                  </td>
+                  <td>{row.totalRepairedCars}</td>
                 </tr>
                 <tr key={`${index}-amount`}>
                   <td></td>
                   {processedData.carTypes.map((carType, idx) => (
-                    <td key={idx}>{row.amountRepairedCars[carType]}</td>
+                    <td key={idx}>{row.amountRepairedCars[carType] === 0 ? '-' : row.amountRepairedCars[carType]}</td>
                   ))}
+                  <td>{row.totalAmountRepairedCars}</td>
                 </tr>
               </>
             ))}
