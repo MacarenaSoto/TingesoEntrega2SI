@@ -10,6 +10,8 @@ const AddCar = () => {
   const [amount, setAmount] = useState("");
   const [brandOptions, setBrand] = useState([]);
   const [brandName, setBrandName] = useState("");
+  const [message, setMessage] = useState(""); // Estado para el mensaje
+  const [error, setError] = useState(""); // Estado para el mensaje de erro
 
 
   useEffect(() => {
@@ -18,8 +20,11 @@ const AddCar = () => {
         const response = await axios.get("http://localhost:6081/api/v2/brands/all");
         setBrand(response.data);  // Asumiendo que `response.data` es el array de marcas
         console.log("Brands response data:", response.data);
+
+      
       } catch (error) {
         console.error("Error fetching brands:", error);
+        
       }
       };
 
@@ -45,10 +50,15 @@ const AddCar = () => {
 
       console.log("Respuesta del backend:", response.data);
 
+      setMessage("Bono añadido correctamente");
+      setError(""); // Limpia el mensaje de error si lo hubiera
+
       // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
     } catch (error) {
       console.error("Error al enviar los datos:", error);
       // Aquí podrías mostrar un mensaje de error al usuario
+      setError("Error al añadir el bono");
+      setMessage(""); // Limpia el mensaje de éxito si lo hubiera
     }
   };
 
@@ -140,6 +150,9 @@ const AddCar = () => {
             Agregar Bono
           </button>
         </form>
+        {message && <p className="success-message">{message}</p>}
+        {error && <p className="error-message">{error}</p>}
+
       </div>
     </div>
   );
