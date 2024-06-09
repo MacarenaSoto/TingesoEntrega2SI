@@ -148,8 +148,6 @@ public class Report1Service {
             return details;
         }
 
-
-
         ArrayList<RequestDetail> detailsByCarType = new ArrayList<>();
         for (RequestCar car : cars) {
             for (RequestDetail detail : details) {
@@ -422,7 +420,11 @@ public class Report1Service {
                 System.out.println("admissionMonth: " + admissionMonth);
 
                 System.out.println("month: " + month);
+                // Tipo de dato de month
+                System.out.println("Tipo de dato de month: " + month.getClass().getName());
                 System.out.println("year: " + year);
+                // Tipo de dato de year
+                System.out.println("Tipo de dato de year: " + year.getClass().getName());
 
                 // comparar mes y año de admissionDate con los parámetros month y year
                 if (!admissionMonth.equals(month) || !admissionYear.equals(year)) {
@@ -440,70 +442,72 @@ public class Report1Service {
             System.out.println("entro al if , details está vacío");
             System.out.println("report1: " + report1);
             return report1;
-        }else{
+        } else {
 
+            ArrayList<RequestType> types = getTypes();
+            System.out.println("types: " + types);
 
-        ArrayList<RequestType> types = getTypes();
-        System.out.println("types: " + types);
+            ArrayList<Long> typeIds = getTypeId(types);
+            System.out.println("typeIds: " + typeIds);
+            for (Long typeId : typeIds) {
+                System.out.println("---------------------Entró al for de typeIds");
+                System.out.println("typeId: " + typeId);
+                ArrayList<RequestDetail> detailsByCarType = getDetailsByCarType2(typeId, month, year);
+                System.out.println("detailsByCarType: " + detailsByCarType);
+                ArrayList<String> repairNames = getRepairNamesForDetails(detailsByCarType);// nombres de las
+                                                                                           // reparaciones
+                                                                                           // que se han hecho
+                System.out.println("repairNames: " + repairNames);
+                ArrayList<Integer> repairAmounts = getRepairAmountsForDetails(detailsByCarType);// valores de las
+                                                                                                // reparaciones que se
+                                                                                                // han
+                                                                                                // hecho
+                System.out.println("repairAmounts: " + repairAmounts);
+                ArrayList<String> baseRepairNames = getRepairNames();// nombres de todas las reparaciones que existen
+                System.out.println("baseRepairNames: " + baseRepairNames);
 
-        ArrayList<Long> typeIds = getTypeId(types);
-        System.out.println("typeIds: " + typeIds);
-        for (Long typeId : typeIds) {
-            System.out.println("---------------------Entró al for de typeIds");
-            System.out.println("typeId: " + typeId);
-            ArrayList<RequestDetail> detailsByCarType = getDetailsByCarType2(typeId, month, year);
-            System.out.println("detailsByCarType: " + detailsByCarType);
-            ArrayList<String> repairNames = getRepairNamesForDetails(detailsByCarType);// nombres de las reparaciones
-                                                                                       // que se han hecho
-            System.out.println("repairNames: " + repairNames);
-            ArrayList<Integer> repairAmounts = getRepairAmountsForDetails(detailsByCarType);// valores de las
-                                                                                            // reparaciones que se han
-                                                                                            // hecho
-            System.out.println("repairAmounts: " + repairAmounts);
-            ArrayList<String> baseRepairNames = getRepairNames();// nombres de todas las reparaciones que existen
-            System.out.println("baseRepairNames: " + baseRepairNames);
+                String carTypeName = getTypeNameById(typeId);
+                System.out.println("carTypeName: " + carTypeName);
 
-            String carTypeName = getTypeNameById(typeId);
-            System.out.println("carTypeName: " + carTypeName);
+                for (String baseRepairName : baseRepairNames) {
+                    System.out.println("---------------------Entró al for de baseRepairNames");
+                    System.out.println("baseRepairName: " + baseRepairName);
 
-            for (String baseRepairName : baseRepairNames) {
-                System.out.println("---------------------Entró al for de baseRepairNames");
-                System.out.println("baseRepairName: " + baseRepairName);
+                    int nRepairedCars = 0;
+                    double nAmountRepairedCars = 0;
 
-                int nRepairedCars = 0;
-                double nAmountRepairedCars = 0;
-
-                for (String repairName : repairNames) {
-                    System.out.println("---------------------Entró al for de repairNames");
-                    System.out.println("repairName: " + repairName);
-                    if (baseRepairName.equals(repairName)) {
-                        System.out.println("---------------------Entró al if de baseRepairName.equals(repairName)");
-                        System.out.println("baseRepairName: " + baseRepairName);
+                    for (String repairName : repairNames) {
+                        System.out.println("---------------------Entró al for de repairNames");
                         System.out.println("repairName: " + repairName);
-                        // se crea un contador para contar cuantas veces se repite una reparación
-                        nRepairedCars++;
-                        System.out.println("nRepairedCars: " + nRepairedCars);
-                        nAmountRepairedCars = nAmountRepairedCars + repairAmounts.get(repairNames.indexOf(repairName));
-                        System.out.println("nAmountRepairedCars: " + nAmountRepairedCars);
+                        if (baseRepairName.equals(repairName)) {
+                            System.out.println("---------------------Entró al if de baseRepairName.equals(repairName)");
+                            System.out.println("baseRepairName: " + baseRepairName);
+                            System.out.println("repairName: " + repairName);
+                            // se crea un contador para contar cuantas veces se repite una reparación
+                            nRepairedCars++;
+                            System.out.println("nRepairedCars: " + nRepairedCars);
+                            nAmountRepairedCars = nAmountRepairedCars
+                                    + repairAmounts.get(repairNames.indexOf(repairName));
+                            System.out.println("nAmountRepairedCars: " + nAmountRepairedCars);
 
-                        // se crea un objeto Report1Entity
-                        Report1Entity report1Entity = new Report1Entity();
-                        report1Entity.setCarType(carTypeName);
-                        report1Entity.setTypeId(typeId);
-                        report1Entity.setRepairName(baseRepairName);
-                        // report1Entity.setRepairId(baseRepairName);?????????la necesitaré????
-                        report1Entity.setNRepairedCars(nRepairedCars);
-                        report1Entity.setAmountRepairedCars(nAmountRepairedCars);
+                            // se crea un objeto Report1Entity
+                            Report1Entity report1Entity = new Report1Entity();
+                            report1Entity.setCarType(carTypeName);
+                            report1Entity.setTypeId(typeId);
+                            report1Entity.setRepairName(baseRepairName);
+                            // report1Entity.setRepairId(baseRepairName);?????????la necesitaré????
+                            report1Entity.setNRepairedCars(nRepairedCars);
+                            report1Entity.setAmountRepairedCars(nAmountRepairedCars);
 
-                        report1.add(report1Entity);
-                        System.out.println("Cada reporte individual -->report1Entity: " + report1Entity);
+                            report1.add(report1Entity);
+                            System.out.println("Cada reporte individual -->report1Entity: " + report1Entity);
 
+                        }
                     }
-                }
 
+                }
             }
         }
-    }
         System.out.println("Todos los reportes que debería hacer --> report1: " + report1);
         System.out.println("--> SALIÓ DE SERVICE report1 ByDate");
         return report1;
@@ -566,4 +570,5 @@ public class Report1Service {
         return filteredReports;
     }
 
+   
 }

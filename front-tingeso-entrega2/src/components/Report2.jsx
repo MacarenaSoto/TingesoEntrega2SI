@@ -97,16 +97,6 @@ const Report2 = () => {
           <tbody>
             {data.map((item, index) => (
               <tr key={index}>
-                <td>{item.patent}</td>
-                <td>{item.initialAmount}</td>
-                <td>{item.discountByRepair}</td>
-                <td>{item.discountByDay}</td>
-                <td>{item.discountByBonus}</td>
-                <td>{item.surchargeByKm}</td>
-                <td>{item.surchargeByDelay}</td>
-                <td>{item.surchargeByAge}</td>
-                <td>{item.finalAmount}</td>
-                <td>{item.date}</td>
               </tr>
             ))}
           </tbody>
