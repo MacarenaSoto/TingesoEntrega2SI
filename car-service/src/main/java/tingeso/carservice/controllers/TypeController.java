@@ -68,5 +68,29 @@ public class TypeController {
         }
     }
 
+    //getTypesIds
+    @GetMapping("/ids")
+    public ResponseEntity<List<Long>> getTypesIds() {
+        System.out.println("Entró a CONTROLLER getTypesIds");
+        try {
+            List<Long> ids = typeService.getTypesIds();
+            return ResponseEntity.ok(ids);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //getTypesNames
+    @GetMapping("/names")
+    public ResponseEntity<List<String>> getTypesNames() {
+        System.out.println("Entró a CONTROLLER getTypesNames");
+        try {
+            List<String> names = typeService.getTypesNames();
+            return ResponseEntity.ok(names);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
 

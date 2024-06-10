@@ -6,22 +6,14 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class Report1Entity {
+public class Report2Aux {
 
-    private String carType; 
-    private Long typeId;
     private String repairName;
-    private Long repairId;
-    private Integer nRepairedCars;
-    private Double amountRepairedCars;
-
-
-
-
+    private Double NPercentageVar;
+    private Double AmountPercentageVar;
 
 }

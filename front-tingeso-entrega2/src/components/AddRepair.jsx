@@ -25,6 +25,10 @@ const AddRepair = () => {
   const [numReparaciones, setNumReparaciones] = useState(1);
   const [reparaciones, setReparaciones] = useState([]);
   const [numberRepairs , setNumberRepairs] = useState(1);
+  const [message, setMessage] = useState(""); // Estado para el mensaje
+  const [error, setError] = useState(""); // Estado para el mensaje de error
+
+
 
   // Función para obtener el engineId basado en la patente
   const fetchEngineId = async (patent) => {
@@ -177,6 +181,9 @@ const AddRepair = () => {
       );
 
       console.log("Respuesta del backend para details:", response2.data);
+      setMessage("Se ha ingresado correctamente el auto al taller de reparaciones");
+      setError(""); // Limpia el mensaje de error si lo hubiera
+
 
      
 
@@ -184,6 +191,8 @@ const AddRepair = () => {
     } catch (error) {
       console.error("Error al enviar los datos:", error);
       // Aquí podrías mostrar un mensaje de error al usuario
+      setError("Error al ingresar el auto al taller de reparaciones");
+      setMessage(""); // Limpia el mensaje de éxito si lo hubiera
     }
   };
 
@@ -271,6 +280,8 @@ const AddRepair = () => {
         </div>
         <button type="submit">Agregar Reparación</button>
       </form>
+      {message && <p className="success-message">{message}</p>}
+        {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

@@ -6,6 +6,10 @@ import "../styles/AddCar.css";
 
 const AddBrand = () => {
   const [name, setName] = useState("");
+  const [message, setMessage] = useState(""); // Estado para el mensaje
+  const [error, setError] = useState(""); // Estado para el mensaje de error
+
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -18,11 +22,15 @@ const AddBrand = () => {
       );
 
       console.log("Respuesta del backend:", response.data);
+      setMessage("Marca añadida correctamente");
+      setError(""); // Limpia el mensaje de error si lo hubiera
 
       // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
     } catch (error) {
       console.error("Error al enviar los datos:", error);
       // Aquí podrías mostrar un mensaje de error al usuario
+      setError("Error al añadir la marca");
+      setMessage(""); // Limpia el mensaje de éxito si lo hubiera
     }
   };
 
@@ -47,6 +55,8 @@ const AddBrand = () => {
             Agregar Marca 
           </button>
         </form>
+        {message && <p className="success-message">{message}</p>}
+        {error && <p className="error-message">{error}</p>}
       </div>
     </div>
   );

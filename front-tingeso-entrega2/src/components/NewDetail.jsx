@@ -30,6 +30,8 @@ const NewDetail = () => {
   const [numberRepairs, setNumberRepairs] = useState(1);
   const [admissionDate, setAdmissionDate] = useState(null);
   const [admissionHour, setAdmissionHour] = useState("");
+  const [message, setMessage] = useState(""); // Estado para el mensaje
+  const [error, setError] = useState(""); // Estado para el mensaje de error
 
   const fetchCarId = async (patent) => {
     try {
@@ -167,20 +169,9 @@ const NewDetail = () => {
         }
       );
 
+      setMessage("¡Boleta generada exitosamente!");
+      setError(""); // Limpia el mensaje de error si lo hubiera
 
-      /* const response2 = await axios.put(
-        `http://localhost:6081/api/v2/carrepairs/update/${id}`,
-        {
-          realExitDate: formattedRealExitDate,
-          realExitHour: formattedRealExitHour,
-          //detailId : newDetailId,
-        }
-      ); */
-
-
-      console.log("Respuesta del backend2 :", response2.data);
-
-      console.log("Respuesta del backend3 :", response3.data);
 
       // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
       //history.push('/detail');
@@ -199,6 +190,8 @@ const NewDetail = () => {
     } catch (error) {
       console.error("Error al enviar los datos:", error);
       // Aquí podrías mostrar un mensaje de error al usuario
+      setError("Error al generar la nueva boleta ");
+      setMessage(""); // Limpia el mensaje de éxito si lo hubiera
     }
   };
 
@@ -264,6 +257,8 @@ const NewDetail = () => {
             </div>
             <button type="submit">Generar Boleta</button>
           </form>
+          {message && <p className="success-message">{message}</p>}
+        {error && <p className="error-message">{error}</p>}
         </div>
       </div>
     </div>

@@ -7,6 +7,12 @@ const Report1 = () => {
   const [brands, setBrands] = useState([]); // Agrega un estado para almacenar las marcas [1]
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
+  const [processedData, setProcessedData] = useState({ repairTypes: [], carTypes: [], organizedData: [] });
+  const [carTypes, setCarTypes] = useState([]);
+  const [carTypesIds, setCarTypesIds] = useState([]);
+  const [repairNames, setRepairNames] = useState([]);
+  const [summaryData, setSummaryData] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(""); // Estado para manejar el mensaje de error
 
   // Manejar el cambio en la selección del mes
   const handleMonthChange = (e) => {
@@ -33,23 +39,129 @@ const Report1 = () => {
     { value: "11", label: "Noviembre" },
     { value: "12", label: "Diciembre" },
   ];
-  
-  const fetchData = async () => {
+
+  const fetchCarTypes = async () => {
     try {
-      const response = await axios.get('http://localhost:8090/api/v1/details/report1vPrueba');
+      const response = await axios.get('http://localhost:6081/api/v2/types/names');
+      console.log('Car types:', response.data);
+      setCarTypes(response.data);
+    } catch (error) {
+      console.error('Error fetching car types:', error);
+    }
+  };
+
+  const fetchRepairNames = async () => {
+    try {
+      const response = await axios.get('http://localhost:6081/api/v2/repairs/namesNoRepeat');
+      console.log('Repair names:', response.data);
+      setRepairNames(response.data);
+    } catch (error) {
+      console.error('Error fetching repair names:', error);
+    }
+  };
+
+  const fetchCarTypesIds = async () => {
+    try {
+      const response = await axios.get('http://localhost:6081/api/v2/types/ids');
+      console.log('Car types ids:', response.data);
+      setCarTypesIds(response.data);
+    } catch (error) {
+      console.error('Error fetching car types ids:', error);
+    }
+  }
+
+  const fetchDataPrevious = async () => {
+    try{
+      const carTypesString = carTypes.join(',');
+      const repairNamesString = repairNames.join(',');
+      const response = await axios.get (`http://localhost:6081/api/v2/reports1/filterReports?carTypes=${carTypesString}&repairNames=${repairNamesString}`);
       setData(response.data);
+      const processed = processData(response.data);
+      setProcessedData(processed);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
+  
+  
+  const fetchData = async () => {
+    try {
+      const carTypesString = carTypes.join(',');
+      const repairNamesString = repairNames.join(',');
+      const response = await axios.get(`http://localhost:6081/api/v2/reports1/filterReportsByDate?carTypes=${carTypesString}&repairNames=${repairNamesString}&month=${selectedMonth}&year=${selectedYear}`);
+      if (response.data.length === 0) {
+        setErrorMessage("No se encontraron datos para el mes y año seleccionados.");
+      }else{
+        setErrorMessage("");
+      }
+      setData(response.data);
+      const processed = processData(response.data);
+      setProcessedData(processed);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }; 
+
+  const fetchSummaryData = async () => {
+    try {
+      const repairNamesString = repairNames.join(',');
+      const response = await axios.get(`http://localhost:6081/api/v2/reports1/summarizeRepairs?typeIds=${carTypesIds}&repairNames=${repairNamesString}`);
+      console.log('Summary data:', response.data);
+      setSummaryData(response.data);
+    } catch (error) {
+      console.error('Error fetching summary data:', error);
+    }
+  };
+  
+
+  
+  
+
   useEffect(() => {
-    axios.get('http://localhost:8081/api/v2/brands/all') // Realiza una petición para obtener las marcas [2]
-        .then((response) => {
-            setBrands(response.data);
-            })
-    fetchData();
+    fetchCarTypes();
+    fetchRepairNames();
+    fetchCarTypesIds();
+    //fetchSummaryData();
   }, []);
+
+  useEffect(() => {
+    if (carTypes.length > 0 && repairNames.length > 0 && !selectedMonth && !selectedYear) {
+      fetchDataPrevious();
+    }
+  }, [carTypes, repairNames, selectedMonth, selectedYear]);
+
+  const processData = (data) => {
+    const repairTypes = [...new Set(data.map(item => item.repairName))]; // Tipos de reparación únicos
+    const carTypes = [...new Set(data.map(item => item.carType))]; // Tipos de coche únicos
+
+    // Crear un objeto para almacenar los datos organizados
+    const organizedData = repairTypes.map(repair => {
+      const repairRow = { repairName: repair, nRepairedCars: {}, amountRepairedCars: {}, totalRepairedCars: 0, totalAmountRepairedCars: 0 };
+
+      carTypes.forEach(car => {
+        const matchingItem = data.find(item => item.repairName === repair && item.carType === car);
+        const nRepairedCars = matchingItem ? matchingItem.nrepairedCars : 0;
+        const amountRepairedCars = matchingItem ? matchingItem.amountRepairedCars : 0;
+        repairRow.nRepairedCars[car] = nRepairedCars;
+        repairRow.amountRepairedCars[car] = amountRepairedCars;
+        repairRow.totalRepairedCars += nRepairedCars;
+        repairRow.totalAmountRepairedCars += amountRepairedCars;
+      });
+
+      return repairRow;
+    });
+
+    return { repairTypes, carTypes, organizedData };
+  };
+
+  const handleSubmit = () => {
+    if (selectedMonth && selectedYear) {
+      fetchData();
+    } else {
+      console.log("Por favor seleccione un mes y un año.");
+    }
+  };
 
   return (
     <div>
@@ -74,35 +186,42 @@ const Report1 = () => {
           placeholder="Escribe un año (ej. 2022)"
         />
       </div>
+
+      <button onClick={handleSubmit}>Buscar</button>
+      {errorMessage && <p>{errorMessage}</p>}
     <div className="tabla-container"> {/* Agrega una clase contenedora para aplicar estilos */}
       <h2>Reporte 1: Listado de reparaciones</h2>
       <table className="tabla-r1"> {/* Agrega una clase a la tabla para aplicar estilos */}
         <thead>
           <tr>
             <th>Lista de Reparaciones</th>
-            {brands.map((brands, index) => (
-            <th key={index}>{brands.name}</th>
-          ))}
+            {processedData.carTypes.map((carType, index) => (
+                <th key={index}>{carType}</th>
+              ))}
             <th>Total </th>
 
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
-            <tr key={index}>
-              <td>{item.patent}</td>
-              <td>{item.initialAmount}</td>
-              <td>{item.discountByRepair}</td>
-              <td>{item.discountByDay}</td>
-              <td>{item.discountByBonus}</td>
-              <td>{item.surchargeByKm}</td>
-              <td>{item.surchargeByDelay}</td>
-              <td>{item.surchargeByAge}</td>
-              <td>{item.finalAmount}</td>
-              <td>{item.date}</td>
-            </tr>
-          ))}
-        </tbody>
+            {processedData.organizedData.map((row, index) => (
+              <>
+                <tr key={index}>
+                  <td>{row.repairName}</td>
+                  {processedData.carTypes.map((carType, idx) => (
+                    <td key={idx}>{row.nRepairedCars[carType]}</td>
+                  ))}
+                  <td>{row.totalRepairedCars}</td>
+                </tr>
+                <tr key={`${index}-amount`}>
+                  <td></td>
+                  {processedData.carTypes.map((carType, idx) => (
+                    <td key={idx}>{row.amountRepairedCars[carType] === 0 ? '-' : row.amountRepairedCars[carType]}</td>
+                  ))}
+                  <td>{row.totalAmountRepairedCars}</td>
+                </tr>
+              </>
+            ))}
+          </tbody>
       </table>
     </div>
     </div>

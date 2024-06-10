@@ -14,6 +14,8 @@ const AddCar = () => {
   const [selectedType, setTypeId] = useState("");
   const [engineOptions, setEngineOptions] = useState([]);
   const [selectedEngine, setEngineId] = useState("");
+  const [message, setMessage] = useState(""); // Estado para el mensaje
+  const [error, setError] = useState(""); // Estado para el mensaje de error
 
 
   useEffect(() => {
@@ -78,10 +80,14 @@ const AddCar = () => {
     
       console.log("Respuesta del backend:", response.data);
       console.log("ID de la marca seleccionada:", selectedBrand);
+      setMessage("Auto añadido correctamente");
+      setError(""); // Limpia el mensaje de error si lo hubiera
 
       // Aquí podrías mostrar un mensaje de éxito o redirigir a otra página
     } catch (error) {
       console.error("Error al enviar los datos:", error);
+      setError("Error al añadir el auto");
+      setMessage(""); // Limpia el mensaje de éxito si lo hubiera
       // Aquí podrías mostrar un mensaje de error al usuario
     }
   };
@@ -186,6 +192,8 @@ const AddCar = () => {
             Agregar Auto
           </button>
         </form>
+        {message && <p className="success-message">{message}</p>}
+        {error && <p className="error-message">{error}</p>}
       </div>
     </div>
   );

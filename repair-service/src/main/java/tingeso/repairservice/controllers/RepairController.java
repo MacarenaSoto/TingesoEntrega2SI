@@ -75,5 +75,29 @@ public class RepairController {
         }
     }
 
+    //getRepairsNames
+    @GetMapping("/names")
+    public ResponseEntity<List<String>> getRepairsNames() {
+        System.out.println("Entró a CONTROLLER getRepairsNames");
+        try {
+            List<String> names = repairService.getRepairsNames();
+            return ResponseEntity.ok(names);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    //getRepairsNamesNoRepeat
+    @GetMapping("/namesNoRepeat")
+    public ResponseEntity<List<String>> getRepairsNamesNoRepeat() {
+        System.out.println("Entró a CONTROLLER getRepairsNamesNoRepeat");
+        try {
+            List<String> names = repairService.getRepairsNamesNoRepeat();
+            return ResponseEntity.ok(names);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }

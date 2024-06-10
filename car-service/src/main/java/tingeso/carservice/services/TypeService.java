@@ -43,4 +43,24 @@ public class TypeService {
             throw new Exception("Error al eliminar el tipo");
         }
     }
+
+    //obtiene los id de los tipos
+    public ArrayList<Long> getTypesIds(){
+        System.out.println("Entró a getTypesIds");
+        ArrayList<Long> ids = new ArrayList<>();
+        for (TypeEntity type : typeRepository.findAll()){
+            ids.add(type.getId());
+        }
+        return ids;
+    }
+
+    //obtiene los nombres de los tipos
+    public ArrayList<String> getTypesNames(){
+        System.out.println("Entró a getTypesNames");
+        ArrayList<String> names = new ArrayList<>();
+        for (TypeEntity type : typeRepository.findAll()){
+            names.add(type.getName());
+        }
+        return names;
+    }
 }
