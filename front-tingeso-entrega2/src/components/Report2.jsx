@@ -5,11 +5,14 @@ import "../styles/R1.css"; // Importa el archivo de estilos CSS
 const Report2 = () => {
   const [data, setData] = useState([]);
   const [brands, setBrands] = useState([]); // Agrega un estado para almacenar las marcas [1]
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedYear, setSelectedYear] = useState("2024"); // Año fijo para este ejemplo
+  const [additionalMonths, setAdditionalMonths] = useState([]);
 
-  const fetchData = async () => {
+  const fetchData = async (month, year) => {
     try {
       const response = await axios.get(
-        "http://localhost:8090/api/v1/details/report1vPrueba"
+        `http://localhost:6081/api/v2/reports2/report2AllsFiltered?month=${month}&year=${year}`
       );
       setData(response.data);
     } catch (error) {
@@ -17,12 +20,13 @@ const Report2 = () => {
     }
   };
 
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [additionalMonths, setAdditionalMonths] = useState([]);
+
 
   // Manejar el cambio en la selección del mes
   const handleMonthChange = (e) => {
-    setSelectedMonth(e.target.value);
+    const selectedMonthValue = e.target.value;
+    setSelectedMonth(selectedMonthValue);
+    fetchData(selectedMonthValue, selectedYear);
   };
 
   // Lista de meses disponibles
@@ -59,6 +63,48 @@ const Report2 = () => {
     setAdditionalMonths(additionalMonthsData);
   }, [selectedMonth]);
 
+  const renderRows = () => {
+    const rows = [];
+    const repairsMap = new Map();
+
+    data.forEach((monthData, monthIndex) => {
+      monthData.forEach((repair) => {
+        if (!repairsMap.has(repair.repairName)) {
+          repairsMap.set(repair.repairName, {});
+        }
+        repairsMap.get(repair.repairName)[monthIndex] = repair;
+      });
+    });
+
+    repairsMap.forEach((values, repairName) => {
+      rows.push(
+        <tr key={repairName}>
+          <td rowSpan="2">{repairName}</td>
+          {additionalMonths.map((_, index) => (
+            <React.Fragment key={index}>
+            <td>{values[index]?.nrepairedCars || "-"}</td>
+            <td>{values[index]?.variation || ""}</td>
+            {/*<td></td>  Columna en blanco */}
+          </React.Fragment>
+          ))}
+        </tr>
+      );
+      rows.push(
+        <tr key={`${repairName}-amount`}>
+          {additionalMonths.map((_, index) => (
+            <React.Fragment key={index}>
+              <td>{values[index]?.amountRepairedCars || "-"}</td>
+              <td>{values[index]?.variation || ""}</td>
+            </React.Fragment>
+          ))}
+        </tr>
+      );
+    });
+    console.log(rows);
+
+    return rows;
+  };
+
   return (
     <div>
       <div>
@@ -79,28 +125,19 @@ const Report2 = () => {
         {/* Agrega una clase contenedora para aplicar estilos */}
         <h2>Reporte 2 : Reporte comparativo de reparaciones</h2>
         <table className="tabla-r1">
-          {" "}
-          {/* Agrega una clase a la tabla para aplicar estilos */}
-          <thead>
-            <tr>
-              <th>Mes</th>
-              {additionalMonths.length >= 0 &&
-                additionalMonths.map((monthData, index) => (
+            <thead>
+              <tr>
+                <th>Reparación</th>
+                {additionalMonths.map((monthData, index) => (
                   <React.Fragment key={index}>
                     <th>{monthData.month} {monthData.difference}</th>
                     <th>{monthData.variation}</th>
-                    
                   </React.Fragment>
                 ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>{renderRows()}</tbody>
+          </table>
       </div>
         )}
     </div>
