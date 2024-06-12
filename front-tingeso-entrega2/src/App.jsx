@@ -1,5 +1,5 @@
 import './App.css'
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
+import {BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import Navbar from "./components/Navbar"
 import Home from './components/Home';
 import NotFound from './components/NotFound';
@@ -54,6 +54,9 @@ function App() {
               <Route path="/CarListDetail" element={<CarListDetail/>} />
               <Route path="/" element={<CarList/>} />
               <Route path="/CarListDetail/:carId/:admissionDate" element={<CarListDetail/>} />
+              
+
+
 
               
             </Routes>

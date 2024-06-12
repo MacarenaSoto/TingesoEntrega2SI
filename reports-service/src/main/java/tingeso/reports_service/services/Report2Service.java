@@ -241,16 +241,19 @@ public class Report2Service {
 
         List<Report2Entity> mergedReports = new ArrayList<>();
         System.out.println("mergedReports: " + mergedReports);
+        List<String> mergeNames = new ArrayList<>();
 
         for (Report2Entity report : report2) {
             System.out.println("---------------------Entró al for de report2");
             System.out.println("report: " + report);
             mergedReports.add(report);
+            mergeNames.add(report.getRepairName());
         }
         for (Report2Entity reportAnt : report2Ant) {
             System.out.println("---------------------Entró al for de report2Ant");
             System.out.println("reportAnt: " + reportAnt);
-            if (!mergedReports.contains(reportAnt)) {
+            String name = reportAnt.getRepairName();
+            if (!mergeNames.contains(name)) {
                 mergedReports.add(reportAnt);
             }
         }
@@ -297,14 +300,15 @@ public class Report2Service {
                 report2Aux.setAmountPercentageVar(amountPercentageVar);
                 report2Aux.setRepairName(report.getRepairName());
 
-            } else if (report2Names.contains(report.getRepairName())) {
+
+            } else if (report2Names.contains(report.getRepairName()) ) {
                 report2Aux.setNPercentageVar(0.0);
                 report2Aux.setAmountPercentageVar(0.0);
                 report2Aux.setRepairName(report.getRepairName());
 
             } else if (report2AntNames.contains(report.getRepairName())) {
-                report2Aux.setNPercentageVar(100.0);
-                report2Aux.setAmountPercentageVar(100.0);
+                report2Aux.setNPercentageVar(-100.0);
+                report2Aux.setAmountPercentageVar(-100.0);
                 report2Aux.setRepairName(report.getRepairName());
             }
 
@@ -353,6 +357,7 @@ public class Report2Service {
         System.out.println("mergedReports3: " + mergedReports3);
 
         // Calcular el porcentaje de variación
+        List<Report2Aux> report2AuxListOriginal = calculatePercentageVar(report2, report2, report2);
 
         List<Report2Aux> report2AuxList = calculatePercentageVar(report2, report2Ant, mergedReports);
         System.out.println("report2AuxList: " + report2AuxList);
@@ -365,6 +370,7 @@ public class Report2Service {
 
         System.out.println("--> SALIÓ DE SERVICE report2Final");
 
+        report2Final.add(report2AuxListOriginal);
         report2Final.add(report2AuxList);
         report2Final.add(report2AuxList2);
         report2Final.add(report2AuxList3);
