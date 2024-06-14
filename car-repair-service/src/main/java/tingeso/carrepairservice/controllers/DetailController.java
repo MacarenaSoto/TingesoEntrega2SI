@@ -4,16 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.thoughtworks.xstream.core.util.Types;
 
 import java.util.List;
-import java.util.Date;
 import java.util.ArrayList;
 
 import tingeso.carrepairservice.entities.DetailEntity;
 import tingeso.carrepairservice.services.DetailService;
 import tingeso.carrepairservice.clients.CarsFeignClient;
-import tingeso.carrepairservice.requests.RequestBrand;
 import tingeso.carrepairservice.requests.RequestCar;
 import tingeso.carrepairservice.requests.RequestRepair;
 import tingeso.carrepairservice.requests.RequestType;
@@ -104,7 +101,7 @@ public class DetailController {
         System.out.println("km: "+kilometraje);
         System.out.println("realExitDate: "+realExitDate);
         try {
-            DetailEntity detail = detailService.updateDetailByCarId(carId, kilometraje, realExitDate, selectedBonus);
+            //DetailEntity detail = detailService.updateDetailByCarId(carId, kilometraje, realExitDate, selectedBonus);
             DetailEntity detail2 = detailService.updateDetailByCarId2(carId, kilometraje, realExitDate, selectedBonus);
             return ResponseEntity.ok(detail2);
         } catch (Exception e) {

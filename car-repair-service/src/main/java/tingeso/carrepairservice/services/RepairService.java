@@ -274,7 +274,7 @@ public class RepairService {
             
 
 
-            Long detailId = detail.getId();
+            //Long detailId = detail.getId();
             System.out.println("Entra al PRIMER FOR : " );
             System.out.println("detail: " + detail);
             for (RepairEntity repair : repairs) {

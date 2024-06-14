@@ -1,18 +1,11 @@
 package tingeso.carrepairservice.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import jakarta.ws.rs.Path;
 
 import java.util.List;
-import java.util.Collections;
-import java.util.Date;
 
 import tingeso.carrepairservice.entities.RepairEntity;
 import tingeso.carrepairservice.services.RepairService;

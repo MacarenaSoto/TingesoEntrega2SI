@@ -1,6 +1,5 @@
 package tingeso.carrepairservice.repositories;
 
-import tingeso.carrepairservice.entities.DetailEntity;
 import tingeso.carrepairservice.entities.RepairEntity;
 
 import org.springframework.data.jpa.repository.JpaRepository;

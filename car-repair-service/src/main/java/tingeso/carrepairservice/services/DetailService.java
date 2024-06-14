@@ -585,7 +585,7 @@ public class DetailService {
             return 0.0;
         }
 
-        double initialAmount = getInitialAmount(carId);
+        //double initialAmount = getInitialAmount(carId);
 
         List<RequestBonus> bonuses = getBonuses();
         for (RequestBonus bonus : bonuses) {
