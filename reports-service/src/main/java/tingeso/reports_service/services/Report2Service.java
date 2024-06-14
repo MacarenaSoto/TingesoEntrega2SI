@@ -1,6 +1,5 @@
 package tingeso.reports_service.services;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,7 +13,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tingeso.reports_service.entities.Report1Entity;
 import tingeso.reports_service.entities.Report2Aux;
 import tingeso.reports_service.entities.Report2Entity;
 
@@ -122,7 +120,7 @@ public class Report2Service {
                 System.out.println("Tipo de dato de admissionDate: " + admissionDate.getClass().getName());
                 // parsear admissionDate a Date
 
-                SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                //SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(admissionDate);
 
@@ -287,7 +285,7 @@ public class Report2Service {
             Report2Aux report2Aux = new Report2Aux();
 
             if (report2Names.contains(report.getRepairName()) && report2AntNames.contains(report.getRepairName())) {
-                int indexReport = report2Names.indexOf(report.getRepairName());
+                //int indexReport = report2Names.indexOf(report.getRepairName());
                 int indexReportAnt = report2AntNames.indexOf(report.getRepairName());
                 double nRepairedCars = report.getNRepairedCars();
                 double nRepairedCarsAnt = report2Ant.get(indexReportAnt).getNRepairedCars();

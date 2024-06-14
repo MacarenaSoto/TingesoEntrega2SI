@@ -8,8 +8,6 @@ import tingeso.reports_service.clients.TypeFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -119,7 +117,7 @@ public class Report1Service {
                 System.out.println("Tipo de dato de admissionDate: " + admissionDate.getClass().getName());
                 // parsear admissionDate a Date
 
-                SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                //SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(admissionDate);
 
@@ -409,7 +407,7 @@ public class Report1Service {
                 System.out.println("Tipo de dato de admissionDate: " + admissionDate.getClass().getName());
                 // parsear admissionDate a Date
 
-                SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                //SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(admissionDate);
 

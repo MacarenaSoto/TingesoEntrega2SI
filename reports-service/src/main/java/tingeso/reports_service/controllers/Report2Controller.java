@@ -11,7 +11,6 @@ import tingeso.reports_service.entities.Report2Entity;
 import tingeso.reports_service.services.Report2Service;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController

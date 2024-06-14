@@ -10,7 +10,6 @@ import tingeso.reports_service.request.RequestType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import tingeso.reports_service.clients.CarRepairsFeignClient;
 import tingeso.reports_service.entities.Report1Entity;
