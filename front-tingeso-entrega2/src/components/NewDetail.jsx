@@ -6,6 +6,7 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "../styles/AddRepair.css";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Detail from "./Detail";
 import "../styles/NewDetail.css";
 
@@ -32,6 +33,11 @@ const NewDetail = () => {
   const [admissionHour, setAdmissionHour] = useState("");
   const [message, setMessage] = useState(""); // Estado para el mensaje
   const [error, setError] = useState(""); // Estado para el mensaje de error
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/home");
+  };
 
   const fetchCarId = async (patent) => {
     try {
@@ -257,6 +263,9 @@ const NewDetail = () => {
             </div>
             <button type="submit">Generar Boleta</button>
           </form>
+          <button onClick={handleNavigate} className="boton11">
+            Inicio
+          </button>
           {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
         </div>

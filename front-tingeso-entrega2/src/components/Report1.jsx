@@ -204,22 +204,21 @@ const Report1 = () => {
         </thead>
         <tbody>
             {processedData.organizedData.map((row, index) => (
-              <>
-                <tr key={index}>
-                  <td>{row.repairName}</td>
+              <React.Fragment key={index}>
+                <tr>
+                  <td rowSpan={2}>{row.repairName}</td>
                   {processedData.carTypes.map((carType, idx) => (
                     <td key={idx}>{row.nRepairedCars[carType]}</td>
                   ))}
                   <td>{row.totalRepairedCars}</td>
                 </tr>
                 <tr key={`${index}-amount`}>
-                  <td></td>
                   {processedData.carTypes.map((carType, idx) => (
                     <td key={idx}>{row.amountRepairedCars[carType] === 0 ? '-' : row.amountRepairedCars[carType]}</td>
                   ))}
                   <td>{row.totalAmountRepairedCars}</td>
                 </tr>
-              </>
+                </React.Fragment>
             ))}
           </tbody>
       </table>

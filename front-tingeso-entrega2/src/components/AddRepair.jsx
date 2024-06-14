@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "../styles/AddRepair.css";
+import { useNavigate } from "react-router-dom";
 
 const isValidHourFormat = (hour) => {
   // Expresión regular para validar el formato de hora (HH:MM)
@@ -27,6 +28,8 @@ const AddRepair = () => {
   const [numberRepairs , setNumberRepairs] = useState(1);
   const [message, setMessage] = useState(""); // Estado para el mensaje
   const [error, setError] = useState(""); // Estado para el mensaje de error
+
+  const navigate = useNavigate();
 
 
 
@@ -196,6 +199,10 @@ const AddRepair = () => {
     }
   };
 
+  const handleNavigate = () => {
+    navigate("/home");
+  }
+
   return (
     <div className="add-car-container">
       <h1>Agregar una nueva Reparación</h1>
@@ -280,6 +287,10 @@ const AddRepair = () => {
         </div>
         <button type="submit">Agregar Reparación</button>
       </form>
+
+      <button onClick={handleNavigate} className="boton11">
+          Inicio
+        </button>
       {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
     </div>

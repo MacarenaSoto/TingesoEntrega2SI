@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/AddCar.css";
 import Long from "long";
+import { useNavigate } from "react-router-dom";
+
 
 const AddCar = () => {
   const [patent, setPatent] = useState("");
@@ -16,6 +18,9 @@ const AddCar = () => {
   const [selectedEngine, setEngineId] = useState("");
   const [message, setMessage] = useState(""); // Estado para el mensaje
   const [error, setError] = useState(""); // Estado para el mensaje de error
+
+  const navigate = useNavigate();
+  const navigate2 = useNavigate();
 
 
   useEffect(() => {
@@ -90,6 +95,14 @@ const AddCar = () => {
       setMessage(""); // Limpia el mensaje de éxito si lo hubiera
       // Aquí podrías mostrar un mensaje de error al usuario
     }
+  };
+
+  const handleNavigate = () => {
+    navigate("/AddRepair");
+  };
+
+  const handleNavigate2 = () => {
+    navigate2("/home");
   };
 
   return (
@@ -192,6 +205,16 @@ const AddCar = () => {
             Agregar Auto
           </button>
         </form>
+
+        <button onClick={handleNavigate} className="boton11">
+          Agregar Reparación
+        </button>
+        <div></div>
+
+        <button onClick={handleNavigate2} className="boton11">
+          Inicio
+        </button>
+
         {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
       </div>

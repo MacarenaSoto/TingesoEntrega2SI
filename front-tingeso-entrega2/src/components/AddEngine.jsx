@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
 import "../styles/AddCar.css";
@@ -8,6 +9,12 @@ const AddEngine = () => {
   const [name, setName] = useState("");
   const [message, setMessage] = useState(""); // Estado para el mensaje
   const [error, setError] = useState(""); // Estado para el mensaje de error
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/home");
+  }
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -55,6 +62,10 @@ const AddEngine = () => {
             Agregar Tipo de Motor 
           </button>
         </form>
+
+        <button onClick={handleNavigate} className="boton11">
+          Inicio
+        </button>
         {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
       </div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import "react-time-picker/dist/TimePicker.css";
 import "../styles/AddRepair.css";
@@ -16,6 +17,11 @@ const AddTypeRepair = () => {
   const [ammount, setAmmount] = useState("");
   const [message, setMessage] = useState(""); // Estado para el mensaje
   const [error, setError] = useState(""); // Estado para el mensaje de error
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/home");
+  };
 
 
   const handleAdmissionHourChange = (e) => {
@@ -100,6 +106,9 @@ const AddTypeRepair = () => {
         </div>
         <button type="submit">Agregar Reparación</button>
       </form>
+      <button onClick={handleNavigate} className="boton11">
+        Inicio
+      </button>
       {message && <p className="success-message">{message}</p>}
         {error && <p className="error-message">{error}</p>}
     </div>
