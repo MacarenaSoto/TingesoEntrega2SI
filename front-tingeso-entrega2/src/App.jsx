@@ -27,8 +27,9 @@ import CarListDetail from './components/CarListDetail';
 function App() {
   return (
       <Router>
+        <Navbar></Navbar>
           <div className="container">
-          <Navbar></Navbar>
+          
             <Routes>
               <Route path="/home" element={<Home/>} />
               <Route path="/prueba" element={<Prueba/>} />

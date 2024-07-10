@@ -275,12 +275,6 @@ const NewDetail = () => {
 };
 
 const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-  },
   column: {
     display: "flex",
     flexDirection: "column",

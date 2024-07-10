@@ -12,9 +12,9 @@ import "../styles/Home.css";
 const Home = () => {
   return (
     <div className="main-container">
-      <div style={{ backgroundColor: "white", padding: "20px"  ,width: '1000px', height: '180px' }}>
+      <div style={{ padding: "20px"  ,width: '80%', height: '90px' }}>
         <div className="title">
-          <p>Autofix</p>
+          <h1>Autofix</h1>
         </div>
       </div>
       <div className="card">

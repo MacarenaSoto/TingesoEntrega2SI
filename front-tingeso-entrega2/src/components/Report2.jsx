@@ -32,8 +32,6 @@ const Report2 = () => {
     }
   };
 
-
-
   // Manejar el cambio en la selección del mes
   const handleMonthChange = (e) => {
     const selectedMonthValue = e.target.value;
@@ -67,10 +65,22 @@ const Report2 = () => {
 
     // Crear un array de objetos que contienen los nombres de los meses y su variación
     const additionalMonthsData = [
-      { month: months[selectedMonthIndex]?.label, },
-      { month: months[previousMonth1Index]?.label, variation: "Variación %" , difference: " (1 mes de diferencia)"},
-      { month: months[previousMonth2Index]?.label, variation: "Variación %" , difference: " (2 meses de diferencia)" },
-      { month: months[previousMonth3Index]?.label, variation: "Variación %"  , difference: " (3 meses de diferencia)"},
+      { month: months[selectedMonthIndex]?.label },
+      {
+        month: months[previousMonth1Index]?.label,
+        variation: "Variación %",
+        difference: " (1 mes de diferencia)",
+      },
+      {
+        month: months[previousMonth2Index]?.label,
+        variation: "Variación %",
+        difference: " (2 meses de diferencia)",
+      },
+      {
+        month: months[previousMonth3Index]?.label,
+        variation: "Variación %",
+        difference: " (3 meses de diferencia)",
+      },
     ];
 
     setAdditionalMonths(additionalMonthsData);
@@ -99,39 +109,40 @@ const Report2 = () => {
       });
     });
 
-
     repairsMap.forEach((values, repairName) => {
       rows.push(
         <tr key={repairName}>
           <td rowSpan="2">{repairName}</td>
           {additionalMonths.map((_, index) => (
             <React.Fragment key={index}>
-            <td>{values[index]?.nrepairedCars || "-"}</td>
-            <td>
-              {values[index]?.variation !== undefined 
-                ? values[index].variation + "%" 
-                : repairsMap2.get(repairName)?.[index]?.npercentageVar !== undefined 
-                ? repairsMap2.get(repairName)[index].npercentageVar + "%" 
-                : "0%"}
-            </td>
-            {/*<td></td>  Columna en blanco */}
-          </React.Fragment>
+              <td>{values[index]?.nrepairedCars || "-"}</td>
+              <td>
+                {values[index]?.variation !== undefined
+                  ? values[index].variation + "%"
+                  : repairsMap2.get(repairName)?.[index]?.npercentageVar !==
+                    undefined
+                  ? repairsMap2.get(repairName)[index].npercentageVar + "%"
+                  : "0%"}
+              </td>
+              {/*<td></td>  Columna en blanco */}
+            </React.Fragment>
           ))}
         </tr>
       );
-      
+
       rows.push(
         <tr key={`${repairName}-amount`}>
           {additionalMonths.map((_, index) => (
             <React.Fragment key={index}>
               <td>{values[index]?.amountRepairedCars || "-"}</td>
               <td>
-              {values[index]?.variation !== undefined 
-                ? values[index].variation + "%" 
-                : repairsMap2.get(repairName)?.[index]?.amountPercentageVar !== undefined 
-                ? repairsMap2.get(repairName)[index].amountPercentageVar + "%" 
-                : "0.0%"}
-            </td>
+                {values[index]?.variation !== undefined
+                  ? values[index].variation + "%"
+                  : repairsMap2.get(repairName)?.[index]
+                      ?.amountPercentageVar !== undefined
+                  ? repairsMap2.get(repairName)[index].amountPercentageVar + "%"
+                  : "0.0%"}
+              </td>
             </React.Fragment>
           ))}
         </tr>
@@ -142,10 +153,10 @@ const Report2 = () => {
     return rows;
   };
 
-
   return (
-    <div>
-      <div>
+    <div className="containerReport1">
+      <div className="dateSelect">
+        <div>
         <h2>Selecciona un mes:</h2>
         <select value={selectedMonth} onChange={handleMonthChange}>
           <option value="">Selecciona un mes</option>
@@ -156,29 +167,31 @@ const Report2 = () => {
           ))}
         </select>
         <p>Mes seleccionado: {selectedMonth}</p>
+        </div>
       </div>
       {selectedMonth && (
-      <div className="tabla-container">
-        {" "}
-        {/* Agrega una clase contenedora para aplicar estilos */}
-        <h2>Reporte 2 : Reporte comparativo de reparaciones</h2>
-        <table className="tabla-r1">
+        <div className="tabla-container">
+          {" "}
+          {/* Agrega una clase contenedora para aplicar estilos */}
+          <h2>Reporte 2 : Reporte comparativo de reparaciones</h2>
+          <table className="tabla-r1">
             <thead>
               <tr>
                 <th>Reparación</th>
                 {additionalMonths.map((monthData, index) => (
                   <React.Fragment key={index}>
-                    <th>{monthData.month} {monthData.difference}</th>
+                    <th>
+                      {monthData.month} {monthData.difference}
+                    </th>
                     <th>{monthData.variation}</th>
                   </React.Fragment>
                 ))}
-
               </tr>
             </thead>
             <tbody>{renderRows()} </tbody>
           </table>
-      </div>
-        )}
+        </div>
+      )}
     </div>
   );
 };
