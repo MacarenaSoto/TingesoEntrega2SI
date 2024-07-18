@@ -16,6 +16,7 @@ const Report2 = () => {
         `http://localhost:6081/api/v2/reports2/report2AllsFiltered?month=${month}&year=${year}`
       );
       setData(response.data);
+      console.log("response", response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -27,6 +28,7 @@ const Report2 = () => {
         `http://localhost:6081/api/v2/reports2/report2Final?month=${month}&year=${year}`
       );
       setData2(response2.data);
+      console.log("response2", response2.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -61,25 +63,22 @@ const Report2 = () => {
     const selectedMonthIndex = parseInt(selectedMonth) - 1;
     const previousMonth1Index = (selectedMonthIndex - 1 + 12) % 12;
     const previousMonth2Index = (selectedMonthIndex - 2 + 12) % 12;
-    const previousMonth3Index = (selectedMonthIndex - 3 + 12) % 12;
 
     // Crear un array de objetos que contienen los nombres de los meses y su variación
     const additionalMonthsData = [
-      { month: months[selectedMonthIndex]?.label },
+      { month: months[selectedMonthIndex]?.label,
+        variation: "Variación1111 %",
+        difference: " ",
+       },
       {
         month: months[previousMonth1Index]?.label,
-        variation: "Variación %",
-        difference: " (1 mes de diferencia)",
+        variation: "Variación22222 %",
+        difference: " 444",
       },
       {
         month: months[previousMonth2Index]?.label,
-        variation: "Variación %",
-        difference: " (2 meses de diferencia)",
-      },
-      {
-        month: months[previousMonth3Index]?.label,
-        variation: "Variación %",
-        difference: " (3 meses de diferencia)",
+        variation: null, // Eliminar la variación para el último elemento
+        difference: " ",
       },
     ];
 
@@ -113,18 +112,19 @@ const Report2 = () => {
       rows.push(
         <tr key={repairName}>
           <td rowSpan="2">{repairName}</td>
-          {additionalMonths.map((_, index) => (
+          {additionalMonths.map((monthData, index) => (
             <React.Fragment key={index}>
               <td>{values[index]?.nrepairedCars || "-"}</td>
-              <td>
-                {values[index]?.variation !== undefined
-                  ? values[index].variation + "%"
-                  : repairsMap2.get(repairName)?.[index]?.npercentageVar !==
-                    undefined
-                  ? repairsMap2.get(repairName)[index].npercentageVar + "%"
-                  : "0%"}
-              </td>
-              {/*<td></td>  Columna en blanco */}
+              {monthData.variation !== null && (
+                <td>
+                  {values[index]?.variation !== undefined
+                    ? values[index].variation + "%"
+                    : repairsMap2.get(repairName)?.[index]?.npercentageVar !==
+                      undefined
+                    ? repairsMap2.get(repairName)[index].npercentageVar + "%"
+                    : "0%"}
+                </td>
+              )}
             </React.Fragment>
           ))}
         </tr>
@@ -132,17 +132,19 @@ const Report2 = () => {
 
       rows.push(
         <tr key={`${repairName}-amount`}>
-          {additionalMonths.map((_, index) => (
+          {additionalMonths.map((monthData, index) => (
             <React.Fragment key={index}>
               <td>{values[index]?.amountRepairedCars || "-"}</td>
-              <td>
-                {values[index]?.variation !== undefined
-                  ? values[index].variation + "%"
-                  : repairsMap2.get(repairName)?.[index]
-                      ?.amountPercentageVar !== undefined
-                  ? repairsMap2.get(repairName)[index].amountPercentageVar + "%"
-                  : "0.0%"}
-              </td>
+              {monthData.variation !== null && (
+                <td>
+                  {values[index]?.variation !== undefined
+                    ? values[index].variation + "%"
+                    : repairsMap2.get(repairName)?.[index]
+                        ?.amountPercentageVar !== undefined
+                    ? repairsMap2.get(repairName)[index].amountPercentageVar + "%"
+                    : "0.0%"}
+                </td>
+              )}
             </React.Fragment>
           ))}
         </tr>
@@ -157,16 +159,16 @@ const Report2 = () => {
     <div className="containerReport1">
       <div className="dateSelect">
         <div>
-        <h2>Selecciona un mes:</h2>
-        <select value={selectedMonth} onChange={handleMonthChange}>
-          <option value="">Selecciona un mes</option>
-          {months.map((month) => (
-            <option key={month.value} value={month.value}>
-              {month.label}
-            </option>
-          ))}
-        </select>
-        <p>Mes seleccionado: {selectedMonth}</p>
+          <h2>Selecciona un mes:</h2>
+          <select value={selectedMonth} onChange={handleMonthChange}>
+            <option value="">Selecciona un mes</option>
+            {months.map((month) => (
+              <option key={month.value} value={month.value}>
+                {month.label}
+              </option>
+            ))}
+          </select>
+          <p>Mes seleccionado: {selectedMonth}</p>
         </div>
       </div>
       {selectedMonth && (
@@ -180,10 +182,8 @@ const Report2 = () => {
                 <th>Reparación</th>
                 {additionalMonths.map((monthData, index) => (
                   <React.Fragment key={index}>
-                    <th>
-                      {monthData.month} {monthData.difference}
-                    </th>
-                    <th>{monthData.variation}</th>
+                    <th>{monthData.month}</th>
+                    {monthData.variation !== null && <th>{monthData.variation}</th>}
                   </React.Fragment>
                 ))}
               </tr>
