@@ -194,17 +194,7 @@ public class RepairService {
         Date dateAdmissionRepair = repairToUpdate.getAdmissionDate();
         System.out.println("dateAdmissionRepair: " + dateAdmissionRepair);
 
-        /*  // buscar el detail que tenga = carId y admissionDate = dateAdmissionRepair:
-        DetailEntity detail = detailService.getDetailIdByCarIdAndAdmissionDate(carId,
-                dateAdmissionRepair);
-                
-        System.out.println("detail.getId(): " + detail.getId());
-
-        repairToUpdate.setDetailId(detail.getId());
-        System.out.println("repairToUpdate.getDetailId(): " + repairToUpdate.getDetailId());
-
-        System.out.println(
-                "HASTA AQUÍ, SE ACTUALIZÓ EL DETAIL ID DE LA REPARACIÓN"); */
+        
 
         // actualiza el discountAmount que obtiene de appliedDiscounts
         repairToUpdate.setDiscountAmount(detailService.getTotalDiscount(carId,
@@ -225,6 +215,23 @@ public class RepairService {
         System.out.println(
                 "....................................................................Se actualizó la reparación con id: "
                         + repairToUpdate.getId());
+
+
+
+
+        System.out.println(
+                "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+         // buscar el detail que tenga = carId y admissionDate = dateAdmissionRepair:
+        DetailEntity detail = detailService.getDetailIdByCarIdAndAdmissionDate(carId,
+                dateAdmissionRepair);
+                
+        System.out.println("detail.getId(): " + detail.getId());
+
+        repairToUpdate.setDetailId(detail.getId());
+        System.out.println("repairToUpdate.getDetailId(): " + repairToUpdate.getDetailId());
+
+        System.out.println(
+                "HASTA AQUÍ, SE ACTUALIZÓ EL DETAIL ID DE LA REPARACIÓN"); 
         return updateRepair(repairToUpdate);
     }
 
