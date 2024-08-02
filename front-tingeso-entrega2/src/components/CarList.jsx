@@ -40,6 +40,13 @@ const CarList = () => {
     return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
+  const formatDate2 = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 1);
+    return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
 
 
   const handleDetail = (id,admissionDate) => {
@@ -85,9 +92,9 @@ const CarList = () => {
             <tr key={index}>
               <td>{item.id}</td>
               <td>{item.patent}</td>
-              <td>{formatDate(item.admissionDate)}</td>
+              <td>{formatDate2(item.admissionDate)}</td>
               <td>{item.admissionHour}</td>
-              <td>{formatDate(item.exitDate)}</td>
+              <td>{formatDate2(item.exitDate)}</td>
               <td>{item.exitHour}</td>
               <td>{formatDate(item.realExitDate)}</td>
               <td>{item.realExitHour}</td>

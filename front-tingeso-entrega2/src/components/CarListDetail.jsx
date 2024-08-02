@@ -57,7 +57,12 @@ const CarListDetail = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
+          {data.map((item, index) => {
+            const totalDiscountAmounts = item.discountAmounts?item.discountAmounts.reduce((acc, amount) => acc + amount, 0): 0 ;
+            const totalSurchargeAmounts = item.surchargeAmounts?item.surchargeAmounts.reduce((acc, amount) => acc + amount, 0): 0 ;
+            const totalRepairAmounts = item.repairAmounts?item.repairAmounts.reduce((acc, amount) => acc + amount, 0): 0 ;
+            const finalAmount = (totalRepairAmounts - totalDiscountAmounts + totalSurchargeAmounts) * 1.19;
+            return (
             <tr key={index}>
             <td>{item.id}</td>
             <td>{item.patent}</td>
@@ -78,7 +83,7 @@ const CarListDetail = () => {
                 ))}
               </ul>
             </td>
-            <td>{item.totalRepairAmounts}</td>
+            <td>{totalRepairAmounts}</td>
             <td>
               <ul>
                 {item.discounts.map((discount, i) => (
@@ -93,7 +98,7 @@ const CarListDetail = () => {
                 ))}
               </ul>
             </td>
-            <td>{item.totalDiscountAmounts}</td>
+            <td>{totalDiscountAmounts}</td>
             <td>
               <ul>
                 {item.surcharges.map((surcharge, i) => (
@@ -108,10 +113,13 @@ const CarListDetail = () => {
                 ))}
               </ul>
             </td>
-            <td>{item.totalSurchargeAmounts}</td>
-            <td>{item.finalAmount}</td> 
+            <td>{totalSurchargeAmounts}</td>
+            <td>{finalAmount}</td> 
           </tr>
-          ))}
+
+          );}
+        )
+      }
         </tbody>
       </table>
     </div>
