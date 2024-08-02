@@ -75,7 +75,7 @@ public class RepairController {
         }
     }
 
-    //update a un repair específico según su carId
+    /* //update a un repair específico según su carId
     @PutMapping("/update/{carId}")
     public ResponseEntity<RepairEntity> updateRepairByCarId(@PathVariable Long carId, @RequestBody RepairEntity repairEntity) {
         try {
@@ -85,11 +85,11 @@ public class RepairController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-    }
+    } */
 
-    /* //update a un repair específico según su carId
+     //update a un repair específico según su carId
     @PutMapping("/update/{carId}")
-    public ResponseEntity<RepairEntity> updateRepairByCarId(@PathVariable Long carId, @PathVariable Long selectedBonus,@PathVariable int km, @PathVariable Date realExitDate, @RequestBody RepairEntity repairEntity) {
+    public ResponseEntity<RepairEntity> updateRepairByCarId(@PathVariable Long carId, @RequestParam Long selectedBonus,@RequestParam int km, @RequestParam String realExitDate, @RequestBody RepairEntity repairEntity) {
         try {
 
             RepairEntity repair = repairService.updateRepairByCarId( carId,  repairEntity , selectedBonus, km ,realExitDate);
@@ -97,7 +97,7 @@ public class RepairController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
-    } */
+    } 
 
     //obtener reparaciones por carId y realExitDate = null
     @GetMapping("/car/{carId}")

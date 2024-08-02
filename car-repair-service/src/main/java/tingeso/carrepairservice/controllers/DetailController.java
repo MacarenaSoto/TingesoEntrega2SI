@@ -101,9 +101,9 @@ public class DetailController {
         System.out.println("km: "+kilometraje);
         System.out.println("realExitDate: "+realExitDate);
         try {
-            //DetailEntity detail = detailService.updateDetailByCarId(carId, kilometraje, realExitDate, selectedBonus);
-            DetailEntity detail2 = detailService.updateDetailByCarId2(carId, kilometraje, realExitDate, selectedBonus);
-            return ResponseEntity.ok(detail2);
+            DetailEntity detail = detailService.updateDetailByCarId(carId, kilometraje, realExitDate, selectedBonus);
+            //DetailEntity detail2 = detailService.updateDetailByCarId2(carId, kilometraje, realExitDate, selectedBonus);
+            return ResponseEntity.ok(detail);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

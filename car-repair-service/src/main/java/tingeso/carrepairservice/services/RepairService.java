@@ -8,6 +8,7 @@ import tingeso.carrepairservice.repositories.RepairRepository;
 import tingeso.carrepairservice.requests.RequestCar;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.task.TaskExecutionProperties.Simple;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.text.SimpleDateFormat;
 
 import tingeso.carrepairservice.clients.CarsFeignClient;
 
@@ -116,86 +118,115 @@ public class RepairService {
         return cars;
     }
 
+    /*
+     * // updateRepairByCarId
+     * public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair) {
+     * System.out.println(
+     * "....................................................................ENTRÓ AL updateRepairByCarId"
+     * );
+     * RepairEntity repairToUpdate = getRepairsByCarIdAndRealExitDateIsNull(carId);
+     * System.out.println(
+     * "....................................................................Se obtuvo la reparación con id: "
+     * + repairToUpdate.getId());
+     * repairToUpdate.setRealExitDate(repair.getRealExitDate());
+     * repairToUpdate.setRealExitHour(repair.getRealExitHour());
+     * // obtener fecha de admisión la repairToUpdate:
+     * Date dateAdmissionRepair = repairToUpdate.getAdmissionDate();
+     * 
+     * // buscar el detail que tenga = carId y admissionDate = dateAdmissionRepair:
+     * DetailEntity detail = detailService.getDetailIdByCarIdAndAdmissionDate(carId,
+     * dateAdmissionRepair);
+     * repairToUpdate.setDetailId(detail.getId());
+     * 
+     * List<Double> discountAmount = detail.getDiscountAmounts();
+     * 
+     * // Suma de los descuentos aplicados:
+     * double totalDiscount = 0;
+     * for (Double discount : discountAmount) {
+     * totalDiscount += discount;
+     * }
+     * repairToUpdate.setDiscountAmount(totalDiscount);
+     * 
+     * List<Double> surchargeAmount = detail.getSurchargeAmounts();
+     * 
+     * // Suma de los recargos aplicados:
+     * double totalSurcharge = 0;
+     * for (Double surcharge : surchargeAmount) {
+     * totalSurcharge += surcharge;
+     * }
+     * repairToUpdate.setSurchargeAmount(totalSurcharge);
+     * 
+     * repairToUpdate.setFinalAmount(detail.getTotalAmount());
+     * 
+     * repairToUpdate.setIva(detail.getIva());
+     * 
+     * // actualiza el iva
+     * // repairToUpdate.setIva(detailService.getIva(carId, km, realExitDate,
+     * // selectedBonus));
+     * 
+     * System.out.println(
+     * "....................................................................Se actualizó la reparación con id: "
+     * + repairToUpdate.getId());
+     * return updateRepair(repairToUpdate);
+     * }
+     */
+
     // updateRepairByCarId
-    public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair) {
-        System.out.println(
-                "....................................................................ENTRÓ AL updateRepairByCarId");
+    public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair, Long selectedBonus, int km,
+            String realExitDateOld) {
+
+        // transforma string 2024-08-05 en Date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date realExitDate = null;
+        try {
+            realExitDate = sdf.parse(realExitDateOld);
+        } catch (Exception e) {
+            System.out.println("Error al convertir la fecha");
+        }
+
         RepairEntity repairToUpdate = getRepairsByCarIdAndRealExitDateIsNull(carId);
-        System.out.println(
-                "....................................................................Se obtuvo la reparación con id: "
-                        + repairToUpdate.getId());
-        repairToUpdate.setRealExitDate(repair.getRealExitDate());
+        repairToUpdate.setRealExitDate(realExitDate);
         repairToUpdate.setRealExitHour(repair.getRealExitHour());
+
+        System.out.println(
+                "HASTA AQUÍ , SE ACTUALIZÓ LA FECHA DE SALIDA Y LA HORA DE SALIDA");
         // obtener fecha de admisión la repairToUpdate:
         Date dateAdmissionRepair = repairToUpdate.getAdmissionDate();
+        System.out.println("dateAdmissionRepair: " + dateAdmissionRepair);
 
-        // buscar el detail que tenga = carId y admissionDate = dateAdmissionRepair:
-        DetailEntity detail = detailService.getDetailIdByCarIdAndAdmissionDate(carId, dateAdmissionRepair);
+        /*  // buscar el detail que tenga = carId y admissionDate = dateAdmissionRepair:
+        DetailEntity detail = detailService.getDetailIdByCarIdAndAdmissionDate(carId,
+                dateAdmissionRepair);
+                
+        System.out.println("detail.getId(): " + detail.getId());
+
         repairToUpdate.setDetailId(detail.getId());
+        System.out.println("repairToUpdate.getDetailId(): " + repairToUpdate.getDetailId());
 
-        List<Double> discountAmount = detail.getDiscountAmounts();
+        System.out.println(
+                "HASTA AQUÍ, SE ACTUALIZÓ EL DETAIL ID DE LA REPARACIÓN"); */
 
-        // Suma de los descuentos aplicados:
-        double totalDiscount = 0;
-        for (Double discount : discountAmount) {
-            totalDiscount += discount;
-        }
-        repairToUpdate.setDiscountAmount(totalDiscount);
+        // actualiza el discountAmount que obtiene de appliedDiscounts
+        repairToUpdate.setDiscountAmount(detailService.getTotalDiscount(carId,
+                selectedBonus));
 
-        List<Double> surchargeAmount = detail.getSurchargeAmounts();
+        // actualiza el surchargeAmount que obtiene de appliedSurcharge
+        repairToUpdate.setSurchargeAmount(detailService.getTotalSurcharge(carId,
+                km, realExitDate));
 
-        // Suma de los recargos aplicados:
-        double totalSurcharge = 0;
-        for (Double surcharge : surchargeAmount) {
-            totalSurcharge += surcharge;
-        }
-        repairToUpdate.setSurchargeAmount(totalSurcharge);
-
-        repairToUpdate.setFinalAmount(detail.getTotalAmount());
-
-        repairToUpdate.setIva(detail.getIva());
+        // actualiza el finalAmount
+        repairToUpdate.setFinalAmount(detailService.getFinalAmount(carId, km,
+                realExitDate, selectedBonus));
 
         // actualiza el iva
-        // repairToUpdate.setIva(detailService.getIva(carId, km, realExitDate,
-        // selectedBonus));
+        repairToUpdate.setIva(detailService.getIva(carId, km, realExitDate,
+                selectedBonus));
 
         System.out.println(
                 "....................................................................Se actualizó la reparación con id: "
                         + repairToUpdate.getId());
         return updateRepair(repairToUpdate);
     }
-
-    /*
-     * //updateRepairByCarId
-     * public RepairEntity updateRepairByCarId(Long carId, RepairEntity repair, Long
-     * selectedBonus, int km, Date realExitDate){
-     * RepairEntity repairToUpdate = getRepairsByCarIdAndRealExitDateIsNull(carId);
-     * repairToUpdate.setRealExitDate(repair.getRealExitDate());
-     * repairToUpdate.setRealExitHour(repair.getRealExitHour());
-     * 
-     * 
-     * 
-     * //actualiza el discountAmount que obtiene de appliedDiscounts
-     * //repairToUpdate.setDiscountAmount(detailService.getTotalDiscount(carId,
-     * selectedBonus));
-     * 
-     * 
-     * //actualiza el surchargeAmount que obtiene de appliedSurcharge
-     * //repairToUpdate.setSurchargeAmount(detailService.getTotalSurcharge(carId,
-     * km, realExitDate));
-     * 
-     * 
-     * //actualiza el finalAmount
-     * //repairToUpdate.setFinalAmount(detailService.getFinalAmount(carId, km,
-     * realExitDate, selectedBonus));
-     * 
-     * 
-     * //actualiza el iva
-     * //repairToUpdate.setIva(detailService.getIva(carId, km, realExitDate,
-     * selectedBonus));
-     * return updateRepair(repairToUpdate);
-     * }
-     */
 
     public List<CarList> getCarsList() {
         List<RequestCar> cars = getCars();
@@ -231,19 +262,14 @@ public class RepairService {
         return Date.from(odt.toInstant());
     }
 
-
-
     public List<CarListDetails> getCarsListDetails(Long carId, String admissionDate) {
         System.out.println("Entró a getCarsListDetails");
 
         Date admissionDateModified = convertToDate(admissionDate);
 
-
-
-
         List<RequestCar> cars = getCars();
         RequestCar car2 = null;
-    
+
         // Obtener el auto que tenga el mismo carId
         for (RequestCar car : cars) {
             if (car.getId().equals(carId)) {
@@ -251,34 +277,31 @@ public class RepairService {
                 break; // Salir del bucle una vez encontrado el auto
             }
         }
-    
+
         if (car2 == null) {
             System.out.println("No se encontró el auto con id: " + carId);
             return new ArrayList<>(); // Retornar una lista vacía si no se encuentra el auto
         }
-    
+
         System.out.println("car2: " + car2);
-    
+
         List<RepairEntity> repairs = getRepairsByCarId(carId);
         System.out.println("ESTAS SON LAS repairs: " + repairs);
-    
+
         List<DetailEntity> details = detailService.getDetailsByCarId(carId);
         List<CarListDetails> carsListDetailsAA = new ArrayList<>();
         System.out.println("ESTAS SON LAS details: " + details);
-    
+
         for (DetailEntity detail : details) {
 
             System.out.println("detail.getAdmissionDate().toInstant(): " + detail.getAdmissionDate().toInstant());
             System.out.println("admissionDateModified.toInstant(): " + admissionDateModified.toInstant());
 
-            
-
-
-            //Long detailId = detail.getId();
-            System.out.println("Entra al PRIMER FOR : " );
+            // Long detailId = detail.getId();
+            System.out.println("Entra al PRIMER FOR : ");
             System.out.println("detail: " + detail);
             for (RepairEntity repair : repairs) {
-                System.out.println("Entra al SEGUNDO FOR : " );
+                System.out.println("Entra al SEGUNDO FOR : ");
                 System.out.println("repair: " + repair);
                 System.out.println("repair.getDetailId(): " + repair.getDetailId());
                 System.out.println("detail.getId(): " + detail.getId());
@@ -286,27 +309,27 @@ public class RepairService {
                     continue;
                 }
                 if (repair.getDetailId() != null && repair.getDetailId().equals(detail.getId())) {
-                    System.out.println("Entra al IF : " );
+                    System.out.println("Entra al IF : ");
 
                     CarListDetails carListDetails = new CarListDetails();
                     carListDetails.setId(detail.getCarId());
                     carListDetails.setPatent(car2.getPatent());
-    
+
                     carListDetails.setAdmissionDate(detail.getAdmissionDate());
                     carListDetails.setExitDate(detail.getExitDate());
                     carListDetails.setRealExitDate(repair.getRealExitDate());
-    
+
                     carListDetails.setRepairs(detail.getRepairNames());
                     carListDetails.setRepairAmounts(detail.getRepairAmounts());
-    
+
                     carListDetails.setDiscounts(detail.getDiscountNames());
                     carListDetails.setDiscountAmounts(detail.getDiscountAmounts());
-    
+
                     carListDetails.setSurcharges(detail.getSurchargeNames());
                     carListDetails.setSurchargeAmounts(detail.getSurchargeAmounts());
-    
+
                     carListDetails.setFinalAmount(detail.getTotalAmount());
-    
+
                     // Añadir a la lista de resultados
                     carsListDetailsAA.add(carListDetails);
                     System.out.println("carsListDetails: " + carsListDetailsAA);
@@ -316,7 +339,6 @@ public class RepairService {
         return carsListDetailsAA;
     }
 
-    //obtiene los repairs según un typeCar
-    
+    // obtiene los repairs según un typeCar
 
 }
