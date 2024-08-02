@@ -29,7 +29,7 @@ const CarListDetail = () => {
 
   return (
     <div className="tabla-container"> {/* Agrega una clase contenedora para aplicar estilos */}
-      <h2>R2: Reporte de cantidad de tipos de vehículos reparados por reparación</h2>
+      <h2>Detalle</h2>
       <table className="tabla-r1"> {/* Agrega una clase a la tabla para aplicar estilos */}
         <thead>
           <tr>
@@ -61,8 +61,8 @@ const CarListDetail = () => {
             <tr key={index}>
             <td>{item.id}</td>
             <td>{item.patent}</td>
-            <td>{moment.utc(item.admissionDate).format('DD/MM/YYYY')}</td>
-              <td>{moment.utc(item.exitDate).format('DD/MM/YYYY')}</td>
+            <td>{item.admissionDate ? moment.utc(item.admissionDate).local().format('DD/MM/YYYY') : 'N/A'}</td>
+              <td>{item.exitDate ? moment.utc(item.exitDate).local().format('DD/MM/YYYY') : 'N/A'}</td>
               <td>{item.realExitDate ? moment.utc(item.realExitDate).local().format('DD/MM/YYYY') : 'N/A'}</td>
             <td>
               <ul>
