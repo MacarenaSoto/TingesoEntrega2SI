@@ -88,7 +88,11 @@ const CarList = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
+          {data.map((item, index) => {
+            const status = getStatus(item.detailId, item.exitDate);
+            const buttonText = status === "Entregado" ? "Ver Detalle" : "Detalle no disponible";
+
+            return (
             <tr key={index}>
               <td>{item.id}</td>
               <td>{item.patent}</td>
@@ -104,10 +108,14 @@ const CarList = () => {
               <td>{item.totalAmounts}</td>
               <td>{getStatus(item.detailId, item.exitDate)}</td>
               <td>
-                    <button onClick = {() => handleDetailClick(item.id, item.admissionDate)}>Ver Detalle</button>
+                    <button onClick = {() => handleDetailClick(item.id, item.admissionDate)}
+                    disabled={status !== "Entregado"}
+                      
+                      >Ver Detalle</button>
               </td>
             </tr>
-          ))}
+          );
+})}
         </tbody>
       </table>
     </div>
