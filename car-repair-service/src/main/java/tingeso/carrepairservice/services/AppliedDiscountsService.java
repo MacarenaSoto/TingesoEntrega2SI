@@ -2,8 +2,6 @@
 
 import tingeso.carrepairservice.entities.AppliedDiscountsEntity;
 
-import org.springframework.web.client.RestTemplate;
-
 
 import tingeso.carrepairservice.repositories.AppliedDiscountsRepository;
 

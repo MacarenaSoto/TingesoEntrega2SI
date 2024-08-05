@@ -1,14 +1,43 @@
 .tabla-container {
+  display: flex;
+  flex-direction: column;
+    width: 100%; /* Opcional: Haz que el contenedor de la tabla ocupe el 100% del ancho disponible */
+    height: 80vh;
     text-align: center; /* Centra el contenido de la tabla */
+    align-items: center;
+    
   }
   
   .tabla-r1 {
     border-collapse: collapse; /* Combina los bordes de las celdas */
-    width: 100%; /* Opcional: Haz que la tabla ocupe el 100% del ancho disponible */
+    width: 90%; /* Opcional: Haz que la tabla ocupe el 100% del ancho disponible */
   }
   
   .tabla-r1 th, .tabla-r1 td {
     padding: 10px; /* Aumenta el espacio entre el contenido y los bordes de las celdas */
     border: 1px solid #dddddd; /* Agrega bordes a las celdas */
   }
-  
+
+  .dateSelect {
+    display: flex;
+    gap: 90px;
+    flex-direction: row;
+    justify-content: center;
+    /* align-items: center; */
+    margin-top: 10px;
+  }
+
+  .dateSelect2 {
+    margin-left: 300px;
+    /* align-items: center; */
+    margin-top: 10px;
+  }
+
+  .containerReport1 {
+    margin-top: 10%;
+    display: grid;
+    width: 100%;
+    height: 100vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }

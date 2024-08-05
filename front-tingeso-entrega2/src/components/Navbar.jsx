@@ -17,7 +17,7 @@ export default function Navbar() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box  style={{height: "30px"}}>
       <AppBar position="static" className="navbar"> {/* Agrega la clase "navbar" */}
         <Toolbar>
           <IconButton
@@ -26,6 +26,7 @@ export default function Navbar() {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
+            style={{ zIndex: 1000 }}
             onClick={toggleDrawer(true)}
           >
             <MenuIcon />
@@ -36,9 +37,10 @@ export default function Navbar() {
           </Typography>
           {/* <Button color="inherit" className="navbar-button">Login</Button> */}
         </Toolbar>
+        
+        <Sidemenu open={open} toggleDrawer={toggleDrawer} ></Sidemenu>
       </AppBar>
-
-      <Sidemenu open={open} toggleDrawer={toggleDrawer}></Sidemenu>
+      
     </Box>
   );
 }

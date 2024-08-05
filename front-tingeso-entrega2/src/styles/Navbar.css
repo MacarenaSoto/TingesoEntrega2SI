@@ -1,6 +1,6 @@
 .navbar {
     background-color: #151c41!important; /* Cambia el color de fondo de la barra de navegación */
-    max-width:1280px  !important ;
+    width: 100%;
   }
   
   .navbar-title {

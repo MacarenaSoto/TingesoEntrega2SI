@@ -34,6 +34,21 @@ const CarList = () => {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
+  const formatDate2 = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 1);
+    return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
+
+
   const handleDetail = (id,admissionDate) => {
     navigate(`/carListDetail/${id}/${admissionDate}`);
     };
@@ -73,15 +88,19 @@ const CarList = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
+          {data.map((item, index) => {
+            const status = getStatus(item.detailId, item.exitDate);
+            const buttonText = status === "Entregado" ? "Ver Detalle" : "Detalle no disponible";
+
+            return (
             <tr key={index}>
               <td>{item.id}</td>
               <td>{item.patent}</td>
-              <td>{item.admissionDate}</td>
+              <td>{formatDate2(item.admissionDate)}</td>
               <td>{item.admissionHour}</td>
-              <td>{item.exitDate}</td>
+              <td>{formatDate2(item.exitDate)}</td>
               <td>{item.exitHour}</td>
-              <td>{item.realExitDate}</td>
+              <td>{formatDate(item.realExitDate)}</td>
               <td>{item.realExitHour}</td>
               <td>{item.detailId}</td>
               <td>{item.discountAmounts}</td>
@@ -89,10 +108,14 @@ const CarList = () => {
               <td>{item.totalAmounts}</td>
               <td>{getStatus(item.detailId, item.exitDate)}</td>
               <td>
-                    <button onClick = {() => handleDetailClick(item.id, item.admissionDate)}>Ver Detalle</button>
+                    <button onClick = {() => handleDetailClick(item.id, item.admissionDate)}
+                    disabled={status !== "Entregado"}
+                      
+                      >Ver Detalle</button>
               </td>
             </tr>
-          ))}
+          );
+})}
         </tbody>
       </table>
     </div>

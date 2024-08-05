@@ -1,9 +1,9 @@
 .main-container {
     display: flex;
     flex-direction: column;
-     justify-content: center;
+     
     align-items: center;
-    min-height: 100vh; 
+    height: 90vh;
   }
 
   .content {
@@ -18,6 +18,8 @@
     justify-content: center;
     align-items: center;
     flex-grow: 1;
+    width: 100%;
+    height: 60vh;
   }
 
   .column {
@@ -32,11 +34,14 @@
   }
   
   .card {
-    display: flex;
+    display: grid;
+    grid-template-columns: 70% 30%;
     width: 80%; /* Ajusta el ancho de la tarjeta según tu diseño */
+    height: 70%;
     /* border: 1px solid #ccc */; 
     border-radius: 10px;
     overflow: hidden;
+    gap: 30px;
   }
   
   .card-image {
@@ -45,20 +50,35 @@
   
   .card-image img {
     width: 100%;
-    height: auto;
+    height: 90%;
+    object-fit: cover;
     
+  }
+
+  .example-image {
+    /* cover*/
+    width: 100%;
+    height: 90%;
+    object-fit: cover;
+
+    
+
   }
   
   .card-buttons {
-    display: center;
+    display: flex;
     flex-direction: column;
-    padding: 10px;
+    justify-content: space-between;
+    width: 100%;
+    height: 90%;
   }
   
   .button {
     margin-bottom: 80px;
-    margin-top: 30px;
+    margin: 0 ;
+
   }
+
   
   .button-link {
     background-color: #151c41;
@@ -77,14 +97,24 @@
   }
 
   .title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     text-align: center;
-    margin-top: 20px;
-    font-size: 5em; /* Tamaño de fuente más grande */
+    margin-top: 0;
+    font-size: 30px; /* Tamaño de fuente más grande */
     font-weight: bold; /* Hacer el texto más grueso */
     transition: color 0.3s; /* Transición de color al pasar el mouse */
     text-decoration: underline; /* Agregar un subrayado */
     color :#151c41 !important; /* Cambio de color */
 }
+
+.title h1 {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  }
   
   .title:hover {
     color: #c999c7  !important; /* Cambio de color al pasar el mouse */

@@ -1,6 +1,5 @@
 package tingeso.reports_service.services;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -14,7 +13,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tingeso.reports_service.entities.Report1Entity;
 import tingeso.reports_service.entities.Report2Aux;
 import tingeso.reports_service.entities.Report2Entity;
 
@@ -122,7 +120,7 @@ public class Report2Service {
                 System.out.println("Tipo de dato de admissionDate: " + admissionDate.getClass().getName());
                 // parsear admissionDate a Date
 
-                SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+                //SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(admissionDate);
 
@@ -287,7 +285,7 @@ public class Report2Service {
             Report2Aux report2Aux = new Report2Aux();
 
             if (report2Names.contains(report.getRepairName()) && report2AntNames.contains(report.getRepairName())) {
-                int indexReport = report2Names.indexOf(report.getRepairName());
+                //int indexReport = report2Names.indexOf(report.getRepairName());
                 int indexReportAnt = report2AntNames.indexOf(report.getRepairName());
                 double nRepairedCars = report.getNRepairedCars();
                 double nRepairedCarsAnt = report2Ant.get(indexReportAnt).getNRepairedCars();
@@ -333,47 +331,36 @@ public class Report2Service {
         System.out.println("report2: " + report2);
         report2 = filterReports3(report2);
 
-        //
+        //Reporte del original con uno antes
         List<Report2Entity> report2Ant = report2FromOriginMonth(month, year, 1);
         System.out.println("report2Ant: " + report2Ant);
         report2Ant = filterReports3(report2Ant);
 
+        //Reporte del anterior con el ante anterior
         List<Report2Entity> report2Ant2 = report2FromOriginMonth(month, year, 2);
         System.out.println("report2Ant2: " + report2Ant2);
         report2Ant2 = filterReports3(report2Ant2);
-
-        List<Report2Entity> report2Ant3 = report2FromOriginMonth(month, year, 3);
-        System.out.println("report2Ant3: " + report2Ant3);
-        report2Ant3 = filterReports3(report2Ant3);
 
         // Unir los reportes
         List<Report2Entity> mergedReports = mergeReports(report2, report2Ant);
         System.out.println("mergedReports: " + mergedReports);
 
-        List<Report2Entity> mergedReports2 = mergeReports(report2, report2Ant2);
+        List<Report2Entity> mergedReports2 = mergeReports(report2Ant, report2Ant2);
         System.out.println("mergedReports2: " + mergedReports2);
 
-        List<Report2Entity> mergedReports3 = mergeReports(report2, report2Ant3);
-        System.out.println("mergedReports3: " + mergedReports3);
-
-        // Calcular el porcentaje de variación
-        List<Report2Aux> report2AuxListOriginal = calculatePercentageVar(report2, report2, report2);
+     /*    // Calcular el porcentaje de variación
+        List<Report2Aux> report2AuxListOriginal = calculatePercentageVar(report2, report2, report2); */
 
         List<Report2Aux> report2AuxList = calculatePercentageVar(report2, report2Ant, mergedReports);
         System.out.println("report2AuxList: " + report2AuxList);
 
-        List<Report2Aux> report2AuxList2 = calculatePercentageVar(report2, report2Ant2, mergedReports2);
+        List<Report2Aux> report2AuxList2 = calculatePercentageVar(report2Ant, report2Ant2, mergedReports2);
         System.out.println("report2AuxList2: " + report2AuxList2);
-
-        List<Report2Aux> report2AuxList3 = calculatePercentageVar(report2, report2Ant3, mergedReports3);
-        System.out.println("report2AuxList3: " + report2AuxList3);
 
         System.out.println("--> SALIÓ DE SERVICE report2Final");
 
-        report2Final.add(report2AuxListOriginal);
         report2Final.add(report2AuxList);
         report2Final.add(report2AuxList2);
-        report2Final.add(report2AuxList3);
         return report2Final;
     }
 
@@ -388,20 +375,19 @@ public class Report2Service {
         List<Report2Entity> report2 = report2(month, year);
         System.out.println("report2: " + report2);
 
-        //
+        //Reporte del original con uno antes
         List<Report2Entity> report2Ant = report2FromOriginMonth(month, year, 1);
         System.out.println("report2Ant: " + report2Ant);
+
+        //Reporte del anterior con el ante anterior
 
         List<Report2Entity> report2Ant2 = report2FromOriginMonth(month, year, 2);
         System.out.println("report2Ant2: " + report2Ant2);
 
-        List<Report2Entity> report2Ant3 = report2FromOriginMonth(month, year, 3);
-        System.out.println("report2Ant3: " + report2Ant3);
 
         report2Final.add(report2);
         report2Final.add(report2Ant);
         report2Final.add(report2Ant2);
-        report2Final.add(report2Ant3);
 
         System.out.println("--> SALIÓ DE SERVICE report2Final");
 

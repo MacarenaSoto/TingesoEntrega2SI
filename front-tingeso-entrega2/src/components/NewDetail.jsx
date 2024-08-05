@@ -125,6 +125,11 @@ const NewDetail = () => {
       console.error("Formato de hora inválido");
     }
   };
+
+  useEffect(() => {
+    console.log("El bono seleccionado ha cambiado: ", selectedBonus);
+  }, [selectedBonus]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -168,10 +173,12 @@ const NewDetail = () => {
       );
 
       const response4 = await axios.put(
-        `http://localhost:6081/api/v2/carrepairs/update/${id}`,
+        `http://localhost:6081/api/v2/carrepairs/update/${id}?selectedBonus=${selectedBonus}&km=${km}&realExitDate=${formattedRealExitDate}`,
         {
-          realExitDate: formattedRealExitDate,
+          //realExitDate: formattedRealExitDate,
           realExitHour: formattedRealExitHour,
+          //selectedBonus: selectedBonus,
+          //km: km,
         }
       );
 
@@ -244,12 +251,16 @@ const NewDetail = () => {
                     const value = e.target.value;
                     const selectedValue = value !== "" ? parseInt(value) : "0"; // Si es una cadena vacía, asigna "0"
 
-                    setSelectedBonus(selectedValue);
-                    console.log("Se seleccionó el bono : ", selectedValue);
+                    setSelectedBonus((prevBonus) =>{
+                      console.log("Se seleccionó el bono : ", selectedValue);
+                      return selectedValue;
+
+                    } );
+                    /* console.log("Se seleccionó el bono : ", selectedValue);
                     console.log(
                       "Se seleccionó el bonoooooooooooooooo final  : ",
                       selectedBonus
-                    );
+                    ); */
                   }}
                 >
                   <option value="">Seleccionar Bono</option>
@@ -275,12 +286,6 @@ const NewDetail = () => {
 };
 
 const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "100vh",
-  },
   column: {
     display: "flex",
     flexDirection: "column",
